@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">Recorded Courses</h2>
+            <a href="{{ url_for('recorded.add_course') }}" class="btn-admin outline-btn">
+                <i class="fa-solid fa-plus"></i>
+                Add Course
+            </a>
+        </div>
+
+        <div class="course-grid">
+            {% for course in recorded %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-book"></i>
+                    <h3>{{ course.title }}</h3>
+                </div>
+                <p>{{ course.description }}</p>
+                <p><strong>Price:</strong> {{ course.price }}</p>
+                <div class="course-actions">
+                    <a href="{{ url_for('recorded.lessons', id=course.id) }}" class="btn">
+                        <i class="fa-solid fa-video"></i> Lessons
+                    </a>
+                    <a href="{{ url_for('recorded.sheets', id=course.id) }}" class="btn">
+                        <i class="fa-solid fa-file"></i> Sheets
+                    </a>
+                    <a href="{{ url_for('recorded.assignments', id=course.id) }}" class="btn">
+                        <i class="fa-solid fa-file-pen"></i> Assignments
+                    </a>
+                    <a href="{{ url_for('recorded.edit_course', id=course.id) }}" class="action-btn edit-btn">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                    <form method="post" action="{{ url_for('recorded.delete_course', id=course.id) }}" style="display:inline;" onsubmit="return confirm('Delete this course?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="action-btn delete-btn">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state"><p>No courses yet.</p></div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

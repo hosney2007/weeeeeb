@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">{{ assignment.title }}</h2>
+        </div>
+
+        <p>{{ assignment.description }}</p>
+
+        {% if assignment.questions %}
+        <form method="post" action="{{ url_for('recorded.submit_assignment', id=assignment.id) }}" class="admin-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            {% for question in assignment.questions %}
+            <div class="input-box">
+                <label class="form-label">{{ loop.index }}. {{ question.question_text }}</label>
+
+                {% if question.question_type == "mcq" %}
+                    {% for option in question.options_list() %}
+                    <label style="display:block; font-weight: normal;">
+                        <input type="radio" name="question_{{ question.id }}" value="{{ option }}" required>
+                        {{ option }}
+                    </label>
+                    {% endfor %}
+                {% else %}
+                    <input type="text" name="question_{{ question.id }}" placeholder="Your answer" required>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="submit-btn">
+                <button type="submit">Submit Assignment</button>
+            </div>
+        </form>
+        {% else %}
+        <div class="empty-state"><p>No questions added for this assignment yet.</p></div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

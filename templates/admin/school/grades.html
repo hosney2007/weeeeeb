@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">School Portal - Grades</h2>
+        </div>
+
+        {% include "admin/school/nav.html" %}
+
+        <div class="booking-form">
+            <form method="post" class="admin-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="input-box">
+                    <label class="form-label">Grade Name</label>
+                    <input type="text" name="name" placeholder="e.g. Grade 10" required>
+                </div>
+                <div class="submit-btn">
+                    <button type="submit">Add Grade (auto-generates code)</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-body">
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Students</th>
+                            <th>Courses</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for grade in grades %}
+                        <tr>
+                            <td>{{ grade.name }}</td>
+                            <td>{{ grade.code }}</td>
+                            <td>{{ grade.students|length }}</td>
+                            <td>{{ grade.courses|length }}</td>
+                            <td>
+                                <div class="table-action">
+                                    <form method="post" action="{{ url_for('school_admin.delete_grade', id=grade.id) }}" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5" class="table-empty">No grades yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+<section class="cour-header">
+    <div class="box">
+        <h1  data-aos="fade-down"> Our Courses </h1>
+        <p  data-aos="fade-up" data-aos-delay="100">
+            choose the learning method that fits your goals. 
+            whether you prefer studying in the classroom, live online, or through recorded sessions
+            we have the right option for you.
+        </p>
+    </div>
+</section>
+<section class="cour-option">
+    <div class="box">
+        <div  data-aos="zoom-in" data-aos-delay="200">
+           <div class="card">
+              <h2> Offline Courses</h2>
+              <p>
+                  study in one of our branches with direct interaction and continuous practice
+              </p>
+              <a href="/courses/offline" class="btn">View Groups</a>
+            </div>
+        </div>
+        <div data-aos="zoom-in" data-aos-delay="300">
+            <div class="card">
+               <h2> Online Courses</h2>
+               <p>
+                  Attend live zoom classes from anywhere and interact directly with the instructor
+               </p>
+               <a href="/courses/online" class="btn">Register Now</a>
+            </div>    
+        </div>
+        <div  data-aos="zoom-in" data-aos-delay="400">
+             <div class="card">
+                <h2> Recorded Courses</h2>
+               <p>
+                  Study anytime, anywhere. Get lifetime access to high-quality recorded lessons
+              </p>
+               <a href="/courses/recorded" class="btn">Buy Courses</a>
+           </div> 
+        </div>
+
+
+
+   
+
+
+    </div>
+
+</section>
+
+{% endblock %}

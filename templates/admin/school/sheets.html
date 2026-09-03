@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">Sheets - {{ course.name }}</h2>
+            <a href="{{ url_for('school_admin.courses') }}" class="btn-admin outline-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Courses
+            </a>
+        </div>
+
+        <div class="booking-form">
+            <form method="post" class="admin-form" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="input-box">
+                    <label class="form-label">Sheet Title</label>
+                    <input type="text" name="title" placeholder="Sheet title" required>
+                </div>
+
+                <div class="input-box">
+                    <label class="form-label">File (pdf, doc, docx, ppt, pptx, image)</label>
+                    <input type="file" name="file" required>
+                </div>
+
+                <div class="submit-btn">
+                    <button type="submit">Upload Sheet</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-body">
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>File</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sheet in course.sheets %}
+                        <tr>
+                            <td>{{ sheet.title }}</td>
+                            <td>
+                                <a href="{{ url_for('static', filename='uploads/' + sheet.file_url) }}" target="_blank">
+                                    open
+                                </a>
+                            </td>
+                            <td>
+                                <div class="table-action">
+                                    <form method="post" action="{{ url_for('school_admin.delete_sheet', id=sheet.id) }}" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="table-empty">No sheets yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

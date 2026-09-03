@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="dashboard-container">
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-book"></i> My Courses ({{ current_user.grade.name if current_user.grade else "-" }})</h2>
+        </div>
+
+        {% if courses %}
+        <div class="course-grid">
+            {% for course in courses %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-book"></i>
+                    <h3>{{ course.name }}</h3>
+                </div>
+                <p>{{ course.description }}</p>
+                <a href="{{ url_for('school.course', id=course.id) }}" class="btn">Open Course</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>No Courses Yet</h3>
+            <p>Your grade has no courses added yet.</p>
+        </div>
+        {% endif %}
+    </section>
+
+</div>
+
+{% endblock %}

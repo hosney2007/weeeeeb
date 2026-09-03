@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="dashboard-container">
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-file-pen"></i> Assignments</h2>
+        </div>
+
+        {% if assignments %}
+        <div class="course-grid">
+            {% for assignment in assignments %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <h3>{{ assignment.title }}</h3>
+                </div>
+                <p>{{ assignment.course.name }}</p>
+
+                {% if assignment.id in submissions %}
+                    <span class="status approved">Completed - {{ submissions[assignment.id].score }}%</span>
+                    <a href="{{ url_for('school.assignment_result', id=submissions[assignment.id].id) }}" class="btn">View Result</a>
+                {% else %}
+                    <span class="status pending">Pending</span>
+                    <a href="{{ url_for('school.assignment', id=assignment.id) }}" class="btn">Start</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><p>No assignments yet.</p></div>
+        {% endif %}
+    </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<section class="payment-page">
+
+    <div class="container">
+
+        <div class="payment-card">
+
+            <!-- Course Info -->
+
+            <div class="course-info">
+
+                    <img src="{{ recorded.thumbnail }}" alt="{{recorded.title}}">
+
+
+                <div>
+
+                    <h1>{{ recorded.title }}</h1>
+
+                    <p>{{ recorded.description }}</p>
+
+                    <h3 class="price">
+                        {{ recorded.price }} EGP
+                    </h3>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <!-- Payment Methods -->
+
+            <h2 class="section-title">
+
+                Payment Methods
+
+            </h2>
+
+            <div class="payment-method">
+
+                <div class="payment-icon">
+
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+
+                </div>
+
+                <div class="payment-details">
+
+                    <h4>Vodafone Cash</h4>
+
+                    <p id="vodafone-number">
+
+                        {{ vodafone_cash_number }}
+
+                    </p>
+
+                </div>
+
+                <button type="button" onclick="copyText('vodafone-number')">
+
+                    Copy
+
+                </button>
+
+            </div>
+
+            <div class="payment-method">
+
+                <div class="payment-icon">
+
+                    <i class="fa-solid fa-building-columns"></i>
+
+                </div>
+
+                <div class="payment-details">
+
+                    <h4>InstaPay</h4>
+
+                    <p id="instapay-id">
+
+                        {{ instapay_id }}
+
+                    </p>
+
+                </div>
+
+                <button type="button" onclick="copyText('instapay-id')">
+
+                    Copy
+
+                </button>
+
+            </div>
+
+            <hr>
+
+            <!-- Instructions -->
+
+            <h2 class="section-title">
+
+                Payment Instructions
+
+            </h2>
+
+            <ul class="instructions">
+
+                <li>Transfer the course amount using one of the payment methods above.</li>
+
+                <li>Take a screenshot after the payment is completed.</li>
+
+                <li>Upload the screenshot below.</li>
+
+                <li>Wait for the admin to review and approve your payment.</li>
+
+            </ul>
+
+            <hr>
+
+            <!-- Upload Form -->
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+
+                <div class="upload-box">
+
+                    <label>
+
+                        Upload Payment Screenshot
+
+                    </label>
+
+                    <input type="file"
+                           name="payment_image"
+                           accept="image/*"
+                           required>
+
+                </div>
+
+                <div class="notes">
+
+                    <label>
+
+                        Notes (Optional)
+
+                    </label>
+
+                    <textarea
+                        name="notes"
+                        rows="4"
+                        placeholder="Write any note for the admin..."></textarea>
+
+                </div>
+
+                <button type="submit"
+                        class="upload-btn">
+
+                    Upload Payment
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

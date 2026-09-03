@@ -1,0 +1,76 @@
+{% extends "base.html"%}
+{%block body%}
+
+
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">Courses</h2>
+        </div>
+        <div class="booking-form">
+            <form method="post" class="admin-form" enctype="multipart/form-data">
+              <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+               <div class="input-box">
+                   <label class="form-label">Course image</label>
+                   <input
+                    type="file"
+                    name="image"
+                    placeholder="Course image"
+                    accept="image"
+                    required
+                    > 
+               </div>
+
+               <div class="input-box">
+                   <label class="form-label">Course Name</label>
+                   <input
+                    type="text"
+                    name="title"
+                    placeholder="Course title"
+                    required
+                    > 
+               </div>
+               <div class="input-box">
+                   <label class="form-label">Course description</label>
+                    <textarea 
+                     name="description"
+                    placeholder="course description"
+                    required
+                    ></textarea>
+               </div>
+               <div class="input-box">
+
+               <select name="course_type" id="course_type">
+               <option value="">
+                 choose course
+                </option>
+                <option value="offline">
+                 offline
+                </option>
+                <option value="online">
+                 online
+                </option>
+             
+               </select>
+
+               </div>
+               <div class="submit-btn">
+                 <button type="submit">
+                 add course 
+                </button>
+               </div>
+
+               
+
+            </form>
+        </div>
+
+    </div>
+</div>       
+
+{%endblock%}
+
+
+
+

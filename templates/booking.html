@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+<section class="booking-hero">
+    <div class="overlay"></div>
+    <div class="booking-content">
+        <span>BOOK YOUR COURSE</span>
+        <h1>Reserve Your Seat</h1>
+        <p>
+            Book your place in one of our SAT,ACT and EST courses.
+            fill in your information and we'll contact you shortly.
+        </p>
+    </div>
+</section>
+
+<section class="booking-form-section">
+    <div class="container">
+        <form class="booking-form" method="post">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+            <h1>Booking form</h1>  
+            <div class="form-grid">
+            <div class="input-box">
+                <label>Student Name</label>
+                <input type="text" placeholder="Enter student name" name="student_name" required>
+            </div>
+            <div class="input-box">
+                <label> student Number</label>
+                <input type="text" placeholder="Enter student number" name="student_number" required>
+            </div>
+            <div class="input-box">
+                <label>parent Number</label>
+                <input type="text" placeholder="Enter parent number" name="parent_number" required>
+            </div>
+            <div class="input-box">
+                <label>Student Grade</label>
+                <select name="grade" required>
+                    <option value="">Select Grade</option>
+                    <option value="10"> Grade 10</option>
+                    <option value="11">Grade 11</option>
+                    <option value="12">Grade 12</option>
+                </select>
+            </div>
+            <div class="input-box">
+                <label>Course Type</label>
+                <select name="exam" id="exam" required>
+                    <option value=""> Select course </option>
+                {%for course in course%}
+                   <option value="{{course.id}}">
+                       {{course.title}}
+                   </option>
+                {%endfor%}
+                </select>
+            </div>
+        </div>
+        <div class="study-mode">
+            <label>Study Mode</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="mode" value="offline">
+                    Offline
+                </label>
+                <label>
+                    <input type="radio" name="mode" value="online">
+                    Online
+                </label>
+
+            </div>
+        
+
+        </div>
+        <div class="input-box" id="branch-box">
+            <label>Branch</label>
+            <select id="branch" name="branch_id" >
+                <option value="">Select Branch</option>
+                {%for branch in branches%}
+                   <option value="{{branch.id}}">
+                       {{branch.name}}
+                   </option>
+                {%endfor%}   
+            </select>
+        </div>
+        <div class="input-box" id="schedule-box">
+            <label> Avalibale Groups</label>
+            <select id="schedule" name="schedule_id" required>
+                <option value=""> Choose Group</option>               
+            </select>
+        </div>
+        <div class="input-box full width">
+            <label> Additional Notes</label>
+            <textarea rows="6" placeholder="Write any additional notes..." name="addational_notes"></textarea>
+        </div>
+        <div class="submit-btn">
+            <button type="submit">
+                Book Now
+            </button>
+        </div>
+       </form>
+    </div>
+</section>
+
+{% endblock %}

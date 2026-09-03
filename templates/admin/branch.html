@@ -1,0 +1,33 @@
+{% extends "base.html"%}
+
+{%block body%}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">Branches</h2>
+            <a href="/admin/add-branch" class="btn-admin outline-btn">
+                <i class="fa-solid fa-plus"></i>
+                Add branch
+            </a>
+        </div>
+        <div class="course-grid">
+            {% for branch in branch%}
+            <div class="course-card">
+           <div class="course-card-header">
+              <i class="fa-solid fa-book"></i>
+              <h3>{{branch.name}}</h3>
+           </div>
+           <div class="course-actions">
+            <form method="post" action="{{ url_for('admin.delete_branch', branch_id=branch.id)}}" style="display:inline;" onsubmit="return confirm('Delete this branch?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="action-btn delete-btn">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </form>
+           </div>
+       </div>
+     {%endfor%}
+</div>
+         
+{%endblock%}

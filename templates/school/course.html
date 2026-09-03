@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="dashboard-container">
+
+    <section class="dashboard-header">
+        <div class="welcome">
+            <h1>{{ course.name }}</h1>
+            <p>{{ course.description }}</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-video"></i> Lessons</h2>
+        </div>
+
+        {% if course.lessons %}
+        <div class="course-grid">
+            {% for lesson in course.lessons %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-video"></i>
+                    <h3>{{ lesson.order }}. {{ lesson.title }}</h3>
+                </div>
+                <p>{{ lesson.description }}</p>
+                <a href="{{ url_for('school.lesson', id=lesson.id) }}" class="btn">Watch</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><p>No lessons yet.</p></div>
+        {% endif %}
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-file"></i> Sheets</h2>
+        </div>
+
+        {% if course.sheets %}
+        <div class="course-grid">
+            {% for sheet in course.sheets %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-file"></i>
+                    <h3>{{ sheet.title }}</h3>
+                </div>
+                <a href="{{ url_for('static', filename='uploads/' + sheet.file_url) }}" target="_blank" class="btn">Download</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><p>No sheets yet.</p></div>
+        {% endif %}
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-file-pen"></i> Assignments</h2>
+        </div>
+
+        {% if course.assignments %}
+        <div class="course-grid">
+            {% for assignment in course.assignments %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <h3>{{ assignment.title }}</h3>
+                </div>
+                <p>{{ assignment.description }}</p>
+                <a href="{{ url_for('school.assignment', id=assignment.id) }}" class="btn">Open</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><p>No assignments yet.</p></div>
+        {% endif %}
+    </section>
+
+</div>
+
+{% endblock %}

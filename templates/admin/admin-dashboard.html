@@ -1,0 +1,975 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<style>
+    .admin-dashboard {
+        background: #f5f6f8;
+        min-height: calc(100vh - 80px);
+        padding: 32px 4%;
+        color: #202636;
+    }
+
+    .dashboard-container {
+        max-width: 1450px;
+        margin: auto;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .dashboard-header h1 {
+        margin: 0;
+        font-size: 29px;
+        font-weight: 700;
+    }
+
+    .dashboard-header p {
+        margin: 6px 0 0;
+        color: #7d8492;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .dashboard-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+    .dashboard-btn.gold {
+        background: #c79a5a;
+        color: white;
+    }
+
+    .dashboard-btn.gold:hover {
+        background: #b7894d;
+        color: white;
+    }
+
+    .dashboard-btn.light {
+        background: white;
+        color: #202636;
+        border: 1px solid #e5e7eb;
+    }
+
+    .dashboard-btn.light:hover {
+        border-color: #c79a5a;
+        color: #c79a5a;
+    }
+
+    /* Action center */
+    .action-center {
+        background: #202636;
+        border-radius: 18px;
+        padding: 22px;
+        margin-bottom: 22px;
+        color: white;
+    }
+
+    .action-center-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .action-center-header h2 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .action-center-header span {
+        font-size: 11px;
+        color: #bfc6d1;
+    }
+
+    .attention-items {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 11px;
+    }
+
+    .attention-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 12px;
+        padding: 14px;
+        text-decoration: none;
+        color: white;
+        transition: .2s;
+    }
+
+    .attention-item:hover {
+        background: rgba(199,154,90,.13);
+        border-color: rgba(199,154,90,.35);
+        color: white;
+    }
+
+    .attention-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .attention-icon.red {
+        background: rgba(216,92,92,.15);
+        color: #f08080;
+    }
+
+    .attention-icon.gold {
+        background: rgba(199,154,90,.15);
+        color: #dfbb80;
+    }
+
+    .attention-icon.blue {
+        background: rgba(84,134,217,.15);
+        color: #82a9eb;
+    }
+
+    .attention-info strong {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 3px;
+    }
+
+    .attention-info span {
+        color: #aeb5c1;
+        font-size: 10px;
+    }
+
+    /* Stats */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 14px;
+        margin-bottom: 22px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #e7e9ed;
+        border-radius: 16px;
+        padding: 17px;
+    }
+
+    .stat-icon {
+        width: 39px;
+        height: 39px;
+        border-radius: 11px;
+        background: rgba(199,154,90,.11);
+        color: #c79a5a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+    }
+
+    .stat-card h3 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .stat-card p {
+        margin: 4px 0 0;
+        color: #858c99;
+        font-size: 11px;
+    }
+
+    .stat-link {
+        display: inline-block;
+        margin-top: 11px;
+        color: #c79a5a;
+        font-size: 10px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    /* Main */
+    .main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(290px, .85fr);
+        gap: 20px;
+    }
+
+    .dashboard-card {
+        background: white;
+        border: 1px solid #e7e9ed;
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 17px;
+    }
+
+    .card-header h2 {
+        margin: 0;
+        font-size: 17px;
+    }
+
+    .card-header a {
+        color: #c79a5a;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .card-header span {
+        color: #858c99;
+        font-size: 10px;
+    }
+
+    /* Schedule */
+    .schedule-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .schedule-item {
+        display: grid;
+        grid-template-columns: 75px 1fr auto;
+        align-items: center;
+        gap: 14px;
+        padding: 13px;
+        border: 1px solid #eceef1;
+        border-radius: 12px;
+    }
+
+    .schedule-time {
+        color: #c79a5a;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .schedule-info strong {
+        display: block;
+        font-size: 12px;
+    }
+
+    .schedule-info span {
+        display: block;
+        margin-top: 3px;
+        color: #858c99;
+        font-size: 10px;
+    }
+
+    .schedule-status {
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 9px;
+        font-weight: 700;
+    }
+
+    .schedule-status.upcoming {
+        color: #527fc6;
+        background: rgba(84,134,217,.1);
+    }
+
+    .schedule-status.booked {
+        color: #399465;
+        background: rgba(57,148,101,.1);
+    }
+
+    /* Activity */
+    .activity {
+        display: flex;
+        gap: 11px;
+        padding: 12px 0;
+        border-bottom: 1px solid #eef0f2;
+    }
+
+    .activity:last-child {
+        border-bottom: 0;
+    }
+
+    .activity-icon {
+        width: 33px;
+        height: 33px;
+        border-radius: 9px;
+        background: rgba(199,154,90,.11);
+        color: #c79a5a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 11px;
+    }
+
+    .activity-info strong {
+        display: block;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .activity-info span {
+        display: block;
+        color: #8a919d;
+        font-size: 9px;
+        margin-top: 2px;
+    }
+
+    /* Quick actions */
+    .quick-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+    }
+
+    .quick-action {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+        border: 1px solid #e7e9ed;
+        border-radius: 11px;
+        text-decoration: none;
+        color: #202636;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .quick-action i {
+        color: #c79a5a;
+    }
+
+    .quick-action:hover {
+        border-color: #c79a5a;
+        color: #c79a5a;
+    }
+
+    /* Empty */
+    .empty-state {
+        text-align: center;
+        padding: 30px 15px;
+        color: #858c99;
+        font-size: 12px;
+    }
+
+    .empty-state i {
+        display: block;
+        font-size: 25px;
+        margin-bottom: 9px;
+        color: #c79a5a;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 950px) {
+        .main-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .attention-items {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .admin-dashboard {
+            padding: 20px 12px;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .dashboard-header h1 {
+            font-size: 23px;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .dashboard-btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .stat-card {
+            padding: 14px;
+        }
+
+        .stat-card h3 {
+            font-size: 20px;
+        }
+
+        .schedule-item {
+            grid-template-columns: 55px 1fr;
+        }
+
+        .schedule-status {
+            display: none;
+        }
+
+        .dashboard-card {
+            padding: 16px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .stats-grid,
+        .quick-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="admin-dashboard">
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+        <div>
+            <h1>Welcome back, {{ user.name }} 👋</h1>
+            <p>Here's what needs your attention today.</p>
+        </div>
+
+        <div class="header-actions">
+            <a href="{{ url_for('booking.admin_booking') }}"
+               class="dashboard-btn light">
+                <i class="fas fa-calendar-check"></i>
+                Bookings
+            </a>
+
+            <a href="{{ url_for('admin.add_course') }}"
+               class="dashboard-btn gold">
+                <i class="fas fa-plus"></i>
+                Add Course
+            </a>
+
+        </div>
+    </div>
+
+
+    <!-- ACTION CENTER -->
+
+    <section class="action-center">
+
+        <div class="action-center-header">
+            <h2>Action Center</h2>
+            <span>Live data from your academy</span>
+        </div>
+
+        <div class="attention-items">
+
+            <a href="{{ url_for('booking.admin_booking') }}"
+               class="attention-item">
+
+                <div class="attention-icon red">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+
+                <div class="attention-info">
+                    <strong>Pending Bookings</strong>
+                    <span>
+                        {{ pending_bookings }}
+                        booking{{ 's' if pending_bookings != 1 else '' }}
+                        waiting for confirmation
+                    </span>
+                </div>
+
+            </a>
+
+
+            <a href="{{ url_for('recorded.orders') }}"
+               class="attention-item">
+
+                <div class="attention-icon gold">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+
+                <div class="attention-info">
+                    <strong>Pending Orders</strong>
+                    <span>
+                        {{ pending_orders }}
+                        order{{ 's' if pending_orders != 1 else '' }}
+                        waiting for review
+                    </span>
+                </div>
+
+            </a>
+
+
+            <a href="{{ url_for('message.contact') }}"
+               class="attention-item">
+
+                <div class="attention-icon blue">
+                    <i class="fas fa-envelope"></i>
+                </div>
+
+                <div class="attention-info">
+                    <strong>Messages Received</strong>
+                    <span>
+                        {{ total_messages }} total message{{ 's' if total_messages != 1 else '' }}
+                    </span>
+                </div>
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- REAL STATS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-day"></i>
+            </div>
+
+            <h3>{{ today_bookings }}</h3>
+            <p>Today's Bookings</p>
+
+            <a href="{{ url_for('booking.admin_booking') }}"
+               class="stat-link">
+                View bookings →
+            </a>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+
+            <h3>{{ pending_bookings }}</h3>
+            <p>Pending Bookings</p>
+
+            <a href="{{ url_for('booking.admin_booking') }}"
+               class="stat-link">
+                Review →
+            </a>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+
+            <h3>{{ "%.2f"|format(monthly_revenue) }}</h3>
+            <p>Approved Revenue</p>
+
+            <a href="{{ url_for('recorded.orders') }}"
+               class="stat-link">
+                View orders →
+            </a>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+
+            <h3>{{ active_students }}</h3>
+            <p>Verified Students</p>
+
+            <a href="{{ url_for('auth.dashboard') }}"
+               class="stat-link">
+                Students →
+            </a>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+
+            <h3>{{ total_courses }}</h3>
+            <p>Active Courses</p>
+
+            <a href="{{ url_for('course.courses') }}"
+               class="stat-link">
+                View courses →
+            </a>
+        </div>
+
+    </section>
+
+
+    <div class="main-grid">
+
+        <!-- LEFT -->
+
+        <div>
+
+            <!-- TODAY'S SCHEDULE -->
+
+            <div class="dashboard-card">
+
+                <div class="card-header">
+                    <h2>Today's Schedule</h2>
+                    <a href="{{ url_for('schedule.show_schedule') }}">
+                        Manage groups →
+                    </a>
+                </div>
+
+                {% if today_schedules %}
+
+                <div class="schedule-list">
+
+                    {% for entry in today_schedules %}
+                    {% set item = entry.schedule %}
+
+                    <div class="schedule-item">
+
+                        <div class="schedule-time">
+                            {{ entry.time }}
+                        </div>
+
+                        <div class="schedule-info">
+
+                            <strong>
+                                {{ item.course.title }}
+                            </strong>
+
+                            <span>
+                                {{ item.level|capitalize }}
+                                · {{ item.mode|capitalize }}
+                                {% if item.branch %}
+                                · {{ item.branch.name }}
+                                {% endif %}
+                            </span>
+
+                        </div>
+
+                        <span class="schedule-status upcoming">
+                            {{ entry.day }}
+                        </span>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state">
+                    <i class="fas fa-calendar-check"></i>
+                    No groups scheduled for today.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- RECENT BOOKINGS -->
+
+            <div class="dashboard-card">
+
+                <div class="card-header">
+                    <h2>Recent Bookings</h2>
+                    <a href="{{ url_for('booking.admin_booking') }}">
+                        View all →
+                    </a>
+                </div>
+
+                {% if recent_bookings %}
+
+                <div class="activity-list">
+
+                    {% for booking in recent_bookings %}
+
+                    <div class="activity">
+
+                        <div class="activity-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+
+                        <div class="activity-info">
+
+                            <strong>
+                                {{ booking.student_name }}
+                                booked
+                                {{ booking.course.title }}
+                            </strong>
+
+                            <span>
+                                {{ booking.status|capitalize }}
+                                · Booking #{{ booking.id }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state">
+                    <i class="fas fa-calendar"></i>
+                    No bookings yet.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- RECENT ORDERS -->
+
+            <div class="dashboard-card">
+
+                <div class="card-header">
+                    <h2>Recent Orders</h2>
+                    <a href="{{ url_for('recorded.orders') }}">
+                        View all →
+                    </a>
+                </div>
+
+                {% if recent_orders %}
+
+                <div class="activity-list">
+
+                    {% for order in recent_orders %}
+
+                    <div class="activity">
+
+                        <div class="activity-icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+
+                        <div class="activity-info">
+
+                            <strong>
+                                {{ order.user.name }}
+                                ·
+                                {{ order.recorded.title }}
+                            </strong>
+
+                            <span>
+                                {{ order.status|capitalize }}
+                                · Order #{{ order.id }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state">
+                    <i class="fas fa-shopping-bag"></i>
+                    No orders yet.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div>
+
+            <!-- QUICK ACTIONS -->
+
+            <div class="dashboard-card">
+
+                <div class="card-header">
+                    <h2>Quick Actions</h2>
+                </div>
+
+                <div class="quick-actions">
+
+                    <a href="{{ url_for('course.courses') }}"
+                       class="quick-action">
+                       <i class="fas fa-book-open"></i>
+                         Courses
+                    </a>
+
+                    <a href="{{ url_for('schedule.show_schedule') }}"
+                       class="quick-action">
+                        <i class="fas fa-users"></i>
+                         Groups
+                    </a>
+
+                    <a href="{{ url_for('admin.branch') }}"
+                       class="quick-action">
+                        <i class="fas fa-building"></i>
+                         Branches
+                    </a>
+
+                    <a href="{{ url_for('recorded.recorded_courses') }}"
+                       class="quick-action">
+                        <i class="fas fa-video"></i>
+                         Recorded Courses
+                    </a>
+
+                    <a href="{{ url_for('admin.success_stories') }}"
+                       class="quick-action">
+                        <i class="fas fa-star"></i>
+                        Success Stories
+                    </a>
+
+                    <a href="{{ url_for('booking.admin_booking') }}"
+                       class="quick-action">
+                        <i class="fas fa-calendar"></i>
+                        Manage Bookings
+                    </a>
+
+                    <a href="{{ url_for('school_admin.grades') }}"
+                       class="quick-action">
+                        <i class="fas fa-school"></i>
+                        School Portal
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- NEXT SESSIONS -->
+
+            <div class="dashboard-card">
+
+                <div class="card-header">
+                    <h2>Next Groups</h2>
+                    <a href="{{ url_for('schedule.show_schedule') }}">
+                        All groups →
+                    </a>
+                </div>
+
+                {% if today_schedules %}
+
+                <div class="schedule-list">
+
+                    {% for entry in today_schedules[:3] %}
+                    {% set item = entry.schedule %}
+
+                    <div class="schedule-item"
+                         style="grid-template-columns:60px 1fr;">
+
+                        <div class="schedule-time">
+                            {{ entry.time }}
+                        </div>
+
+                        <div class="schedule-info">
+
+                            <strong>
+                                {{ item.course.title }}
+                            </strong>
+
+                            <span>
+                                {{ item.level|capitalize }}
+                                · {{ item.mode|capitalize }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state">
+                    <i class="fas fa-clock"></i>
+                    Nothing scheduled today.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- SYSTEM STATUS -->
+
+            <div class="dashboard-card">
+
+                <div class="card-header">
+                    <h2>System Status</h2>
+                </div>
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                    padding:13px;
+                    border-radius:11px;
+                    background:rgba(57,148,101,.08);
+                    color:#399465;
+                    font-size:12px;
+                    font-weight:600;
+                ">
+                    <span style="
+                        width:9px;
+                        height:9px;
+                        border-radius:50%;
+                        background:#399465;
+                    "></span>
+
+                    Academy system is running normally
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

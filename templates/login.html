@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+
+<section class="auth-section">
+
+    <div class="auth-card">
+
+        <h2>Welcome Back</h2>
+        <p>Login to your account</p>
+
+        <form action="{{ url_for('auth.login') }}" method="POST">
+             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+
+            <label>Email</label>
+            <input type="email"
+                   name="email"
+                   placeholder="Enter your email"
+                   required>
+
+            <label>Password</label>
+            <input type="password"
+                   name="password"
+                   placeholder="Enter your password"
+                   required>
+
+            <button type="submit" class="auth-btn">
+                Login
+            </button>
+
+        </form>
+
+        <div class="auth-links">
+
+            <a href="{{ url_for('auth.forgot_password') }}">
+                Forgot Password?
+            </a>
+
+            <div class="auth-divider">
+                OR
+            </div>
+
+            <span>Don't have an account?</span>
+            <br>
+
+            <a href="{{ url_for('auth.register') }}">
+                Create Account
+            </a>
+
+        </div>
+
+        {% if show_resend %}
+        <div class="auth-links">
+
+            <div class="auth-divider">
+                OR
+            </div>
+
+            <span>Didn't receive the verification email?</span>
+
+            <form action="{{ url_for('auth.resend_verification') }}" method="POST" class="resend-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <input type="email"
+                       name="email"
+                       placeholder="Enter your email"
+                       required>
+
+                <button type="submit" class="auth-btn">
+                    Resend Verification Email
+                </button>
+            </form>
+
+        </div>
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

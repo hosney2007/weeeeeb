@@ -1,0 +1,559 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+
+<style>
+
+    /* ================================
+       FREE SESSION PAGE
+    ================================= */
+
+    .free-session-page {
+        background: #f8f8f7;
+        color: #202020;
+        min-height: 100vh;
+    }
+
+
+    /* ================================
+       HERO
+    ================================= */
+
+    .free-hero {
+        position: relative;
+        padding: 75px 20px 65px;
+        background: linear-gradient(135deg, #061123 0%, #061124e8 55%, #0f1e37 100%);
+        color: white;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .free-hero::before {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: rgba(199, 154, 90, .08);
+        top: -170px;
+        left: -120px;
+    }
+
+    .free-hero::after {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: rgba(199, 154, 90, .06);
+        bottom: -150px;
+        right: -80px;
+    }
+
+    .free-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 760px;
+        margin: auto;
+    }
+
+    .free-label {
+        display: inline-block;
+        padding: 7px 14px;
+        border: 1px solid rgba(199,154,90,.45);
+        border-radius: 30px;
+        color: #d6ae73;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+    }
+
+    .free-hero h1 {
+        font-size: clamp(32px, 5vw, 52px);
+        line-height: 1.1;
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .free-hero h1 span {
+        color: #c79a5a;
+    }
+
+    .free-hero p {
+        max-width: 600px;
+        margin: 18px auto 0;
+        color: #c9c9c9;
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+
+    /* ================================
+       MAIN CONTENT
+    ================================= */
+
+    .free-content {
+        max-width: 1050px;
+        margin: auto;
+        padding: 65px 20px 80px;
+    }
+
+
+    /* ================================
+       SECTION INTRO
+    ================================= */
+
+    .session-section {
+        margin-bottom: 70px;
+    }
+
+    .section-heading {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 30px;
+    }
+
+    .section-heading .small-title {
+        display: block;
+        color: #c79a5a;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 9px;
+    }
+
+    .section-heading h2 {
+        margin: 0;
+        font-size: clamp(25px, 4vw, 36px);
+        color: #061123;
+    }
+
+    .section-heading p {
+        margin: 12px 0 0;
+        color: #777;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+
+    /* ================================
+       VIDEO CARD
+    ================================= */
+
+    .video-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 12px;
+        box-shadow: 0 18px 50px rgba(0,0,0,.08);
+        border: 1px solid #ececec;
+    }
+
+    .video-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: 14px;
+        background: #061123;
+    }
+
+    .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+    }
+
+
+    /* ================================
+       INTRO VIDEO
+    ================================= */
+
+    .intro-section {
+        max-width: 850px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    /* ================================
+       FREE SESSION
+    ================================= */
+
+    .main-session {
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .session-info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 22px;
+    }
+
+    .info-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 13px;
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 30px;
+        color: #555;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .info-pill i {
+        color: #c79a5a;
+    }
+
+
+    /* ================================
+       CTA
+    ================================= */
+
+    .booking-cta {
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                #061123,
+                #0f1e37
+            );
+        color: white;
+        border-radius: 24px;
+        padding: 55px 30px;
+        text-align: center;
+        margin-top: 75px;
+    }
+
+    .booking-cta::before {
+        content: "";
+        position: absolute;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: rgba(199,154,90,.08);
+        left: -80px;
+        top: -100px;
+    }
+
+    .booking-cta::after {
+        content: "";
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(199,154,90,.06);
+        right: -70px;
+        bottom: -110px;
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 2;
+        max-width: 650px;
+        margin: auto;
+    }
+
+    .cta-content .cta-label {
+        color: #d6ae73;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+    }
+
+    .cta-content h2 {
+        margin: 10px 0 12px;
+        font-size: clamp(27px, 4vw, 38px);
+    }
+
+    .cta-content p {
+        color: #c9c9c9;
+        font-size: 14px;
+        line-height: 1.8;
+        margin-bottom: 25px;
+    }
+
+    .booking-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 13px 24px;
+        background: #c79a5a;
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .25s ease;
+    }
+
+    .booking-btn:hover {
+        background: #b7894d;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(199,154,90,.2);
+    }
+
+
+    /* ================================
+       DIVIDER
+    ================================= */
+
+    .section-divider {
+        width: 50px;
+        height: 2px;
+        background: #c79a5a;
+        margin: 0 auto 30px;
+        border-radius: 5px;
+    }
+
+
+    /* ================================
+       MOBILE
+    ================================= */
+
+    @media (max-width: 700px) {
+
+        .free-hero {
+            padding: 55px 17px 50px;
+        }
+
+        .free-hero p {
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .free-content {
+            padding: 45px 13px 60px;
+        }
+
+        .session-section {
+            margin-bottom: 55px;
+        }
+
+        .video-card {
+            padding: 7px;
+            border-radius: 14px;
+        }
+
+        .video-wrapper {
+            border-radius: 9px;
+        }
+
+        .booking-cta {
+            margin-top: 55px;
+            padding: 42px 20px;
+            border-radius: 18px;
+        }
+
+        .info-pill {
+            font-size: 10px;
+            padding: 7px 10px;
+        }
+    }
+
+</style>
+
+
+<div class="free-session-page">
+
+
+    <!-- ================================
+         HERO
+    ================================= -->
+
+    <section class="free-hero">
+
+        <div class="free-hero-content">
+
+            <span class="free-label">
+                Free Math Session
+            </span>
+
+            <h1>
+                Experience the way
+                <span>Math is taught.</span>
+            </h1>
+
+            <p>
+                Get to know Mr. Abdelfatah, his teaching approach,
+                and experience a complete free math session before
+                deciding to join a course.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <main class="free-content">
+
+
+        <!-- ================================
+             INTRO VIDEO
+        ================================= -->
+
+        <section class="session-section intro-section">
+
+            <div class="section-heading">
+
+                <span class="small-title">
+                    Meet Your Teacher
+                </span>
+
+                <h2>
+                    Get to Know Mr. Abdelfatah
+                </h2>
+
+                <div class="section-divider"></div>
+
+                <p>
+                    Take a few minutes to learn about the teacher,
+                    the teaching philosophy, and how we approach
+                    mathematics.
+                </p>
+
+            </div>
+
+
+            <div class="video-card">
+
+                <div class="video-wrapper">
+
+                    <iframe
+                        src="YOUR_3_MINUTE_INTRO_VIDEO_URL"
+                        title="Introduction to Mr. Abdelfatah"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================================
+             FREE SESSION VIDEO
+        ================================= -->
+
+        <section class="session-section main-session">
+
+            <div class="section-heading">
+
+                <span class="small-title">
+                    Your Free Session
+                </span>
+
+                <h2>
+                    Watch a 30-Minute Math Session
+                </h2>
+
+                <div class="section-divider"></div>
+
+                <p>
+                    No registration. No payment.
+                    Just watch the session and experience
+                    the teaching style for yourself.
+                </p>
+
+            </div>
+
+
+            <div class="session-info">
+
+                <span class="info-pill">
+                    <i class="fas fa-clock"></i>
+                    30 Minutes
+                </span>
+
+                <span class="info-pill">
+                    <i class="fas fa-play"></i>
+                    Free to Watch
+                </span>
+
+                <span class="info-pill">
+                    <i class="fas fa-lock-open"></i>
+                    No Login Required
+                </span>
+
+            </div>
+
+
+            <div class="video-card">
+
+                <div class="video-wrapper">
+
+                    <iframe
+                        src="YOUR_30_MINUTE_FREE_SESSION_URL"
+                        title="Free Math Session"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================================
+             CTA
+        ================================= -->
+
+        <section class="booking-cta">
+
+            <div class="cta-content">
+
+                <span class="cta-label">
+                    Ready to Continue?
+                </span>
+
+                <h2>
+                    Take the Next Step
+                </h2>
+
+                <p>
+                    If you enjoyed the session and want to continue
+                    learning with a structured course and expert
+                    guidance, book your course today.
+                </p>
+
+                <a
+                    href="{{ url_for('booking') }}"
+                    class="booking-btn">
+
+                    Book Your Course Now
+
+                    <i class="fas fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+{%endblock%}

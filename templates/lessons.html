@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<section class="lesson-page">
+
+    <div class="container">
+
+        <!-- ===================== -->
+
+        <!-- Course Header -->
+
+        <!-- ===================== -->
+
+        <div class="course-header">
+
+            <h1>{{ recorded.title }}</h1>
+
+            <p>{{ recorded.description }}</p>
+        </div>
+
+        <!-- ===================== -->
+
+        <!-- Main Layout -->
+
+        <!-- ===================== -->
+
+        <div class="lesson-layout">
+
+            <!-- ===================== -->
+
+            <!-- Left Side -->
+
+            <!-- ===================== -->
+
+            <div class="lesson-content">
+
+                <!-- Video Player -->
+
+                <div class="video-player">
+                   <iframe
+                   src="{{ lesson.video_links }}"
+                   frameborder="0"
+                   allow="autoplay; fullscreen; picture-in-picture"
+                   allowfullscreen>
+                   </iframe>
+                </div>
+
+                <!-- Lesson Information -->
+
+                <div class="lesson-info">
+
+                    <span class="lesson-number">
+
+                        Lesson {{lesson.lesson_order}}
+
+                    </span>
+
+                    <h2>
+
+                        {{ lesson.title }}
+
+                    </h2>
+
+                    <p>
+
+                        Welcome to this lesson.
+
+                        Here you can watch the lesson video and continue learning
+
+                        through all course lessons.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- ===================== -->
+
+            <!-- Right Side -->
+
+            <!-- ===================== -->
+
+            <aside class="lesson-sidebar">
+
+                <div class="sidebar-header">
+
+                    <h3>Course Content</h3>
+
+                    <span>
+
+                        {{ lessons|length }} Lessons
+
+                    </span>
+
+                </div>
+
+                <div class="quick-actions" style="margin-bottom:16px;">
+                    <a href="{{ url_for('recorded.student_sheets', course_id=recorded.id) }}" class="quick-action">
+                        <i class="fa-solid fa-file"></i> Sheets
+                    </a>
+                    <a href="{{ url_for('recorded.student_assignments', course_id=recorded.id) }}" class="quick-action">
+                        <i class="fa-solid fa-file-pen"></i> Assignments
+                    </a>
+                </div>
+
+                <div class="lesson-list">
+
+                    {% for video in lessons %}
+                       <a href="{{ url_for( 'recorded.course_lessons', course_id=recorded.id, lesson=video.id) }}"class="lesson-item">
+
+                        <div class="lesson-card-left">
+
+                            <div class="lesson-order">
+
+                                {{ video.lesson_order }}
+
+                            </div>
+
+                            <div class="lesson-text">
+
+                                <h4>
+
+                                    {{ video.title }}
+
+                                </h4>
+
+                                <small>
+
+                                    Click to Watch
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        <div class="lesson-card-right">
+
+                            <i class="fa-solid fa-play"></i>
+
+                        </div>
+
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

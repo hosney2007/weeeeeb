@@ -1,0 +1,95 @@
+
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">Bookings</h2>
+        </div>
+        <div class="card-body">
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                         <th>Name</th>
+                         <th>Student Number</th>
+                         <th>Student Number</th>
+                         <th>Grade</th>
+                         <th>Course</th>
+                         <th> Mode</th>
+                         <th>Branch</th>
+                         <th>Addational Notes</th>
+                         <th>Status</th>
+                         <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for booking in booking%}
+                         <tr>
+                          <td>{{booking.student_name }}</td>
+                          <td>{{booking.student_number }}</td>
+                          <td>{{booking.parent_number }}</td>
+                          <td>{{booking.grade }}</td>
+                          <td>{{booking.course.title }}</td>
+                          <td>{{booking.mode }}</td>
+                          <td>{{booking.branch.name }}</td>
+                          <td>{{booking.addational_notes}}</td>
+                          <td>
+                             {%if booking.status == "pending"%}
+                                <span class="badge badge-warning">Pending</span>
+                             {%else%}  
+                                <span class=" badge badge-success">Approved</span>
+                             {%endif%}
+                            </td>
+                            <td>
+                                <div class="table-action">
+                                    {%if booking.status == "pending"%}
+                                        <form method="post" action="{{ url_for('booking.approve_booking', booking_id=booking.id)}}" style="display:inline;">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fa-solid fa-check"></i>
+                                                approve
+                                            </button>
+                                        </form>
+                                    {%else%}  
+                                        approved
+                                    {%endif%}
+                                    |
+                                    <form method="post" action="{{ url_for('booking.delete_booking', booking_id=booking.id)}}" style="display:inline;" onsubmit="return confirm('Delete this booking?');">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-trash"></i>
+                                            delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                         </tr> 
+                        {%endfor%}   
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{%endblock%}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

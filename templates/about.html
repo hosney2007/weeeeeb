@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+<!--abouthero-->
+<section class="about-hero">
+    <div class="container">
+        <div class="about-hero-content">
+            <span class="about-tag"  data-aos="fade-down">
+                ABOUT US
+            </span>
+            <h1  data-aos="fade-right" data-aos-delay="150">
+                Meet Your Instructor
+                <span  data-aos="zoom-in" data-aos-delay="500">Mr.Abdelfatah</span>
+            </h1>
+            <p  data-aos="fade-up" data-aos-delay="300">
+                Helping students master Mathematics through
+                clear explanations, continuous practice, and
+                personalized guidance for SAT, ACT, and EST.
+            </p>
+        </div>
+        <div  data-aos="zoom-in" data-aos-delay="600">
+            <div class="hero_img">
+               <img src="{{ url_for('static', filename='image/abdelfatah.png') }}" alt="teache">
+            </div>
+        </div>
+    </div>
+</section>
+<!--===============================================================================-->
+
+<!--about info-->
+<section class="about-info">
+    <div class="container about-container">
+        <div  data-aos="fade-right" data-aos-delay="400">
+           <div class="about-img">
+              <img src="{{ url_for('static', filename='image/aboutpage.jpeg') }}" alt="teache">
+           </div>
+        </div>
+
+        <div class="about-text">
+            <span class="section-tag"  data-aos="fade-down">WHO WE ARE </span>
+            <h2  data-aos="zoom-in" data-aos-delay="100">More Than A
+                <span>Math Instructor</span>
+
+            </h2>
+            <p  data-aos="fade-up" data-aos-delay="200"> I believe that every student can excel in mathematics
+                with the right explanation, structured practice,
+                and continuous support
+            </p>
+            <p  data-aos="fade-up" data-aos-delay="200">
+                My goal is not only helping students achieve high scores,
+                but also making them enjoy learning mathematics with
+                confidence
+            </p>
+            <div  data-aos="zoom-in" data-aos-delay="300">  
+              <a href="/courses" class="btn">  Explore courses</a>
+           </div>
+        </div>
+    </div>
+</section>
+<!--===============================================================================-->
+<!--gallery-->
+<section class="gallery">
+    <div class="container">
+        <div class="section-title">
+            <span class="section-tag"  data-aos="zoom-in">
+                GALLERY
+            </span>
+            <h2  data-aos="fade-down" data-aos-delay="100">
+                Inside our Classes
+            </h2>
+            <p  data-aos="fade-up" data-aos-delay="200"> Real moments of learning, teamwork and achievment.</p>
+        </div>
+        <div class="gallery-grid">
+            <div  data-aos="zoom-in">
+                <div class="gallery-item">
+                  <img src="{{ url_for('static', filename='image/gallery-1.jpeg') }}" alt="photo">
+                </div>
+            </div>
+            <div  data-aos="zoom-in" data-aos-delay="100">
+                 <div class="gallery-item">
+                   <img src="{{ url_for('static', filename='image/gallery-3.jpeg') }}" alt="photo">
+                 </div>
+            </div>
+            <div  data-aos="zoom-in" data-aos-delay="200">
+                 <div class="gallery-item">
+                    <img src="{{ url_for('static', filename='image/gallery-4.jpeg') }}" alt="photo">
+                 </div>
+            </div>
+            <div  data-aos="zoom-in" data-aos-delay="300">
+                <div class="gallery-item">
+                     <img src="{{ url_for('static', filename='image/gallery-5.jpeg') }}" alt="photo">
+                </div>
+            </div>
+            <div  data-aos="zoom-in" data-aos-delay="400">
+                 <div class="gallery-item">
+                  <img src="{{ url_for('static', filename='image/gallery-6.jpeg') }}" alt="photo">
+                </div>
+            </div>
+            <div data-aos="zoom-in" data-aos-delay="500">
+                 <div class="gallery-item">
+                   <img src="{{ url_for('static', filename='image/gallery-2.jpeg') }}" alt="photo">
+                </div>  
+            </div>
+            <div  data-aos="zoom-in" data-aos-delay="600">
+                 <div class="gallery-item">
+                   <img src="{{ url_for('static', filename='image/gallery-7.jpeg') }}" alt="photo">
+                </div>  
+            </div>
+            <div data-aos="zoom-in" data-aos-delay="700">
+                 <div class="gallery-item">
+                   <img src="{{ url_for('static', filename='image/gallery_8.jpeg') }}" alt="photo">
+                </div>  
+            </div>
+                                           
+        </div>
+    </div>
+</section>
+
+
+
+<!--===============================================================================-->
+
+<!--faq-->
+<section class="faq">
+    <div class="container">
+        <div class="section-title">
+            <span class="section-tag">FAQ</span>
+            <h2  data-aos="zoom-in">Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-container"  data-aos="fade-down">
+            <details>
+                <summary
+                >Which programs do you specialize in?
+                <i class="fa-solid fa-plus"></i>
+                </summary>
+                <p> I specialize in SAT, ACT, and EST Mathematics, helping students build strong concepts, master exam strategies, and achieve top scores.</p>
+            </details>
+             <details>
+                <summary>How are classes delivered?
+                <i class="fa-solid fa-plus"></i>
+                    
+                </summary>
+                <p>Choose the learning style that suits you best: Online Live Classes, In-Person Sessions, or Recorded Courses available anytime.</p>
+            </details>
+             <details>
+                <summary>How do I enroll in a course?
+                <i class="fa-solid fa-plus"></i>
+
+                </summary>
+                <p>Simply visit the Booking page, select your preferred course and schedule, complete your registration, and we’ll contact you with all the details.</p>
+            </details>
+            <details>
+                <summary>How can I track my progress?
+                <i class="fa-solid fa-plus"></i>
+
+                </summary>
+                <p> Your performance is monitored through regular quizzes, mock exams, and personalized feedback, helping you identify strengths and areas for improvement.</p>
+            </details>
+
+        </div>
+    </div>
+
+</section>
+<!--===============================================================================-->
+
+<!--cta-->
+<section class="about-cta">
+    <div  class="container">
+        <h2>
+            Ready to Achieve Your target Score?
+
+
+        </h2>
+        <p> 
+             Join hundreds of students who transformed their
+            math skills through structured practice and expert guidance.
+        </p>
+        <a href="/booking" class="btn btn-cta">Book Your Seat</a>
+    </div>
+</section>
+
+
+
+{% endblock %}

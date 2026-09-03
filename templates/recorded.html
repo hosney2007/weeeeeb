@@ -1,0 +1,66 @@
+{% extends "base.html"%}
+
+{%block body%}
+
+
+<section class="recorded-page">
+    <div class="recorded-header">
+       <h1 class="page-title">Recorded Courses</h1>
+       <p>learn at your own pace with lifetime access to recorded sessions</p>
+    </div>
+</section>
+<section  class="recorded-courses">
+    <div class="recorded-container">
+        <div class="recorded-grid">
+          {%for recorded in recorded%}
+           <div  data-aos="zoom-in" data-aos-delay="300">
+             <div class="recorded-card">
+                <div class="recorded-img" c>
+                    {%if recorded.thumbnail%}
+                      <img src="{{ recorded.thumbnail }}" alt="{{recorded.title}}">
+                    {%endif%}
+                </div>
+                <div class="recorded-content">
+                    <h3>{{recorded.title}}</h3>
+                    <p class="p1"> {{recorded.description}}</p>
+                    <p class="course-lessons"><i class="fa-solid fa-video"></i> {{recorded.lessons|length}} Lessons</p>
+                    <hr>
+                   <span class="price-tag">
+                    <i class="fa-solid fa-tag"></i>
+                     {{"{:,.0f}".format(recorded.price or 0) }} EGP
+                  </span>
+                   {% set purchase = purchases.get(recorded.id)%}
+                </div>
+                <div class="recorded-actions">
+                    {%if not purchase %}
+                    <a href="{{ url_for('recorded.payment', id=recorded.id)}}" class="btn"> Buy</a>
+                    {%elif purchase.status == "pending" %}
+                    <button >
+                        Waiting Approval
+                    </button>
+                    {%elif purchase.status =="approved" %}
+
+                    <a href="{{ url_for('recorded.course_lessons', course_id=recorded.id) }}"
+                     class="btn btn-primary">
+                     Watch Course
+                   </a>
+
+                    {%elif purchase.status == "rejected" %}
+                    <a href="{{ url_for('recorded.buy_course', id=recorded.id)}}" class="btn">upload pyment again</a>
+                    {%endif%}
+
+                </div>
+             </div>
+           </div>
+          {%endfor%} 
+        </div>
+    </div>
+</section>   
+
+
+
+
+
+
+         
+{%endblock%}

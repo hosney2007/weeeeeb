@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container mt-5">
+
+    <h2>Add New Group</h2>
+
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+        <!-- Course -->
+        <div class="mb-3">
+            <label>Course</label>
+            <select name="course_id" class="form-control" required>
+                <option value="">Choose Course</option>
+
+                {% for course in course %}
+                    <option value="{{ course.id }}">
+                        {{ course.title }}
+                    </option>
+                {% endfor %}
+
+            </select>
+        </div>
+
+
+        <!-- Level -->
+        <div class="mb-3">
+            <label>Level</label>
+            <select name="level" class="form-control" required>
+                <option value="">Choose Level</option>
+                <option value="basics">Basics</option>
+                <option value="advanced">Advanced</option>
+            </select>
+        </div>
+
+
+        <!-- Mode -->
+        <div class="mb-3">
+            <label>Mode</label>
+
+            <select name="mode" id="mode" class="form-control" required>
+                <option value="">Choose Mode</option>
+                <option value="online">Online</option>
+                <option value="offline">Offline</option>
+            </select>
+
+        </div>
+
+
+        <!-- Branch -->
+        <div class="mb-3" id="branch-box" style="display:none;">
+
+            <label>Branch</label>
+
+            <select name="branch_id" class="form-control">
+
+                <option value="">Choose Branch</option>
+
+                {% for branch in branches %}
+                    <option value="{{ branch.id }}">
+                        {{ branch.name }}
+                    </option>
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <!-- Day-1 -->
+        <div class="mb-3">
+
+            <label>Day-1</label>
+
+            <select name="day1" class="form-control" required>
+
+                <option value="">Choose Day</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Time -->
+        <div class="mb-3">
+
+            <label>Time-1</label>
+
+            <input
+                type="time"
+                name="time1"
+                class="form-control"
+                required
+            >
+
+        </div>
+        <!-- Day-2 -->
+        <div class="mb-3">
+
+            <label>Day-2</label>
+
+            <select name="day2" class="form-control" required>
+
+                <option value="">Choose Day</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Time -->
+        <div class="mb-3">
+
+            <label>Time2</label>
+
+            <input
+                type="time"
+                name="time2"
+                class="form-control"
+                required
+            >
+
+        </div>
+
+
+
+        <button type="submit" class="btn btn-dark">
+            Add Group
+        </button>
+
+    </form>
+
+</div>
+
+
+<script>
+
+const mode = document.getElementById("mode");
+const branchBox = document.getElementById("branch-box");
+
+mode.addEventListener("change", function () {
+
+    if (this.value === "offline") {
+
+        branchBox.style.display = "block";
+
+    } else {
+
+        branchBox.style.display = "none";
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

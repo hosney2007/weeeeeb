@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="dashboard-container">
+
+    <section class="dashboard-header">
+        <div class="welcome">
+            <h1>Welcome, <span>{{ current_user.name }}</span></h1>
+            <p>Grade: {{ current_user.grade.name if current_user.grade else "-" }}</p>
+        </div>
+        <div class="student-avatar">
+            <img src="{{ url_for('static', filename='image/defult.png') }}" alt="Student">
+        </div>
+    </section>
+
+    <div class="quick-actions" style="margin-bottom:22px;">
+        <a href="{{ url_for('school.courses') }}" class="quick-action">
+            <i class="fa-solid fa-book"></i> Courses
+        </a>
+        <a href="{{ url_for('school.assignments') }}" class="quick-action">
+            <i class="fa-solid fa-file-pen"></i> Assignments
+        </a>
+        <a href="{{ url_for('school.sheets') }}" class="quick-action">
+            <i class="fa-solid fa-file"></i> Sheets
+        </a>
+        <a href="{{ url_for('school.progress') }}" class="quick-action">
+            <i class="fa-solid fa-chart-line"></i> Progress
+        </a>
+    </div>
+
+    <section class="statistic">
+
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-book"></i></div>
+            <h2>{{ total_courses }}</h2>
+            <p>Courses</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-video"></i></div>
+            <h2>{{ total_recorded }}</h2>
+            <p>Recorded Courses</p>
+        </div>
+        
+
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-file-pen"></i></div>
+            <h2>{{ total_assignments }}</h2>
+            <p>Assignments</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon pending"><i class="fa-solid fa-hourglass-half"></i></div>
+            <h2>{{ pending_assignments|length }}</h2>
+            <p>Pending</p>
+        </div>
+
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-book"></i> School Courses</h2>
+            <a href="{{ url_for('school.courses') }}" class="btn">View All</a>
+        </div>
+
+        {% if courses %}
+        <div class="course-grid">
+            {% for course in courses %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-book"></i>
+                    <h3>{{ course.name }}</h3>
+                </div>
+                <p>{{ course.description }}</p>
+                <a href="{{ url_for('school.course', id=course.id) }}" class="btn">Open Course</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>No Courses Yet</h3>
+            <p>Your grade has no courses added yet.</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-file-pen"></i> Pending School Assignments</h2>
+            <a href="{{ url_for('school.assignments') }}" class="btn">View All</a>
+        </div>
+
+        {% if pending_assignments %}
+        <div class="course-grid">
+            {% for assignment in pending_assignments %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <h3>{{ assignment.title }}</h3>
+                </div>
+                <p>{{ assignment.course.name }}</p>
+                <a href="{{ url_for('school.assignment', id=assignment.id) }}" class="btn">Start</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>All Done!</h3>
+            <p>No pending assignments right now.</p>
+        </div>
+        {% endif %}
+    </section>
+ <section class="dashboard-section">
+
+        <div class="section-header">
+
+            <h2>
+                <i class="fa-solid fa-book-open"></i>
+                My Recorded Courses
+            </h2>
+
+        </div>
+
+        <div class="courses-grid">
+
+            {% if purchases %}
+
+                {% for purchase in purchases %}
+
+                    <div class="course-card">
+
+                        <div class="course-image">
+                        <img src="{{ url_for('static', filename='uploads/'+ purchase.recorded.thumbnail) }}" alt="">
+
+
+                        </div>
+
+                        <div class="course-content">
+
+                            <h3>{{ purchase.recorded.title }}</h3>
+
+                            <p>{{ purchase.recorded.description[:90] }}...</p>
+
+                            <a href="{{ url_for('recorded.course_lessons',
+                            course_id=purchase.recorded.id) }}"
+                            class="continue-btn">
+
+                                Continue Learning
+
+                            </a>
+
+                            <div class="course-actions" style="margin-top:10px;">
+                                <a href="{{ url_for('recorded.student_sheets', course_id=purchase.recorded.id) }}" class="btn">
+                                    <i class="fa-solid fa-file"></i> Sheets
+                                </a>
+                                <a href="{{ url_for('recorded.student_assignments', course_id=purchase.recorded.id) }}" class="btn">
+                                    <i class="fa-solid fa-file-pen"></i> Assignments
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <h3>No Recorded Courses Yet</h3>
+
+                    <p>Purchase a recorded course to start learning.</p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+<!-- ========================= -->
+<!-- My Bookings -->
+<!-- ========================= -->
+
+<section class="dashboard-section">
+
+    <div class="section-header">
+
+        <h2>
+            <i class="fa-solid fa-calendar-days"></i>
+            My Bookings
+        </h2>
+
+    </div>
+
+    {% if bookings %}
+
+    <div class="booking-table">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Course</th>
+
+                    <th>Type</th>
+
+                    <th>Branch</th>
+
+                    <th>Group</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for booking in bookings %}
+
+                <tr>
+
+                    <td>
+
+                        {{ booking.course.title }}
+
+                    </td>
+
+                    <td>
+
+                        {{ booking.course.course_type }}
+
+                    </td>
+
+                    <td>
+
+                        {{ booking.schedule.branch.name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ booking.schedule.name }}
+
+                    </td>
+
+                    <td>
+
+                        {% if booking.status == "approved" %}
+
+                        <span class="status approved">
+                            Approved
+                        </span>
+
+                        {% elif booking.status == "pending" %}
+
+                        <span class="status pending">
+                            Pending
+                        </span>
+
+                        {% else %}
+
+                        <span class="status rejected">
+                            Rejected
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <h3>No Bookings Yet</h3>
+
+        <p>You haven't booked any courses.</p>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ========================= -->
+<!-- Student Profile -->
+<!-- ========================= -->
+
+<section class="dashboard-section">
+
+    <div class="section-header">
+
+        <h2>
+
+            <i class="fa-solid fa-user"></i>
+
+            Profile
+
+        </h2>
+
+    </div>
+
+    <div class="profile-card">
+
+        <div class="profile-info">
+
+            <h3>{{ user.full_name }}</h3>
+
+            <p>
+
+                <i class="fa-solid fa-envelope"></i>
+
+                {{ user.email }}
+
+            </p>
+
+            <p>
+
+                <i class="fa-solid fa-book"></i>
+
+                {{ total_recorded }} Recorded Courses
+
+            </p>
+
+            <p>
+
+                <i class="fa-solid fa-calendar-check"></i>
+
+                {{ total_bookings }} Bookings
+
+            </p>
+            <a href="{{ url_for('auth.logout') }}" class="btn" style="margin-top:10px; display:inline-block;">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+{% endblock %}

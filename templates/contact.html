@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+<section class="contact-hero">
+    <div class="container">
+        <span class="section-tag"  data-aos="fade-down">CONTACT US</span>
+        <h1 data-aos="zoom-in" data-aos-delay="200"> Let's Get in Touch</h1>
+        <p  data-aos="fade-up" data-aos-delay="300">Have questions? We're always here to help you choose the right course and start your learning Journey.</p>
+        <div class="hero-buttons"  data-aos="zoom-in" data-aos-delay="400">
+            <a href="" class="btn-nav">Book now</a>
+        <a href="https://wa.me/201287951523" class="btn"> whatsapp</a>
+
+        </div>
+    </div>
+</section>
+<!--===============================================================================-->
+<section class="contact-section">
+    <div class="container">
+        <div class="section-title">
+             <span class="section-tag"> GET IN TOUCH</span>
+           <h2>Contact Information</h2>
+           <p>
+            Feel free to contact us anytime.
+           </p>
+            
+        </div>
+
+    
+        <div class="contact-wrapper">
+      <div class="branches"  data-aos="zoom-in">
+        
+        <h3  data-aos="fade-down" data-aos-delay="100">Our Branches</h3>
+        <div data-aos="fade-down" data-aos-delay="300">
+            <div class="branch-card">
+            <i class="fa-solid fa-location-dot"></i>
+            <h4>Maadi</h4>
+            <a href="">View on Maps</a>
+           </div>
+        </div>
+        <div data-aos="fade-down" data-aos-delay="500">
+            <div class="branch-card">
+            <i class="fa-solid fa-location-dot"></i>
+            <h4> New Cairo</h4>
+            <a href="">View on Maps</a>
+           </div>
+        </div>
+        <div data-aos="fade-down" data-aos-delay="700">
+            <div class="branch-card">
+            <i class="fa-solid fa-location-dot"></i>
+            <h4> Nasr City</h4>
+            <a href="">View on Maps</a>
+           </div>
+        </div>
+
+
+ 
+        
+        <div class="contact-info">
+            <p>
+            
+                <i class="fa-solid fa-phone"></i>
+                +201287951523
+
+            </p>
+            <p>
+                <i class="fa-solid fa-clock"></i>
+                Daily | 10 AM - 10PM
+            </p>
+        </div>
+      </div>
+        <div class="contact-form"  data-aos="zoom-in" data-aos-delay="400">
+            <h3>Send A Message</h3>
+            <form method="post">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <input type="text"
+                name="name"
+                placeholder="Full Name">
+                <input type="tel"
+                name="number"
+                placeholder="Phone Number">
+                <select name="course">
+                    <option value="">Select Course</option>
+                    <option value="sat">SAT</option>
+                    <option value="est">EST</option>
+                    <option value="act">ACT</option>
+                </select>
+                <Textarea rows="6"
+                name="message"
+                placeholder="Message"></Textarea>
+                <button type="submit"
+                class="btn">Send Message</button>
+                
+            </form>
+        </div>
+   
+        </div>
+    </div>    
+</section>
+<!--===============================================================================-->
+
+
+<section class="location-section">
+    <div class="container">
+        <div class="section-title" data-aos="fade-down">
+            <span class="section-tag">FIND US</span>
+            <h2> Our location</h2>
+        </div>
+        <div class="location-grid" data-aos="zoom-out" data-aos-delay="300">
+            <div class="location-card" >
+              <img src="{{ url_for('static', filename='image/maadi.jpeg') }}" alt="photo">
+                <div class="location-content">
+                    <h3>
+                        <i class="fa-solid fa-location-dot"></i>
+
+                         Maadi Branch
+                        </h3>
+                    <p> Sharee el-Nasr</p>
+                    <a href="https://maps.google.com/?q=29.975649,31.285305" target="_blank" class="location-btn">
+                        Get Directions
+                    </a>
+                </div>
+            </div>
+            <div class="location-card">
+              <img src="{{ url_for('static', filename='image/madentnasr.jpeg') }}" alt="photo">
+                <div class="location-content">
+                    <h3> 
+                       <i class="fa-solid fa-location-dot"></i>
+
+                        Nasr city Branch
+                    </h3>
+                    <p>.....</p>
+                    <a href="https://maps.app.goo.gl/KtbRREkyUTYngvAF8?g_st=ic" target="_blank" class="location-btn">
+                        Get Directions
+                    </a>
+                </div>
+            </div>
+            <div class="location-card">
+              <img src="{{ url_for('static', filename='image/tagmoo.jpeg') }}" alt="photo">
+                <div class="location-content">
+                    <h3>
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        New Cairo Branch
+                    </h3>
+                    <p> el-Nakhil Mall</p>
+                    <a href="https://maps.app.goo.gl/za4orcZY7m8UFAto8?g_st=ic" target="_blank" class="location-btn">
+                        Get Directions
+                    </a>
+                </div>
+            </div>            
+        </div>
+    </div>
+</section>
+
+<!--===============================================================================-->
+<section class="social">
+    <div class="container social-container">
+        <div class="section-title social-title">
+            <span class="section-tag social-tag"> FOLLOW US</span>
+            <H2>Stay Conected</H2>
+        </div>
+        <div class="soical-icons">
+            <a href="https://www.facebook.com/share/1E1nicRkst/">
+               <i class="fa-brands fa-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/abdalftahbrakat/">
+
+              <i class="fa-brands fa-instagram"></i>
+           </a>
+           <a href="https://www.tiktok.com/@abdelfattahmahmo84/">
+              <i class="fa-brands fa-tiktok"></i>
+          </a>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

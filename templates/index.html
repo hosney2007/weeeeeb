@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+<!--hero section-->
+<section class="hero" data-aos="">
+    <div class="hero_content">
+        <span class="tag">American Diploma Mathematics</span>
+        <h1 data-aos="fade-down">
+            MR Abdelfatah Barkat
+        </h1>
+        <h2 data-aos="fade-up" data-aos-delay="200"> SAT • EST • ACT </h2>
+        <p data-aos="fade-up" data-aos-delay="400"> 
+            Learn Mathematics with simplified explinition, intensive practice, and continuous follow-up.
+            achieve your target score with confidance 
+        </p>
+
+        <div class="hero-buttons" >
+            <a href="/courses" class="btn" data-aos="zoom-in" data-aos-delay="600">Explore Courses </a>
+            <a href="/contact" class="btn" data-aos="zoom-in" data-aos-delay="700"> contact us</a>
+        </div>
+    </div>
+    <div data-aos="fade-left" data-aos-delay="800">
+         <div class="hero_img">
+           <img src="{{ url_for('static', filename='image/abdelfatah.png') }}" alt="teache">
+        </div>
+    </div>
+
+</section>
+
+<!--===============================================================================-->
+
+
+<!-- why us section-->
+ <section class="why-us">
+    <div class="section-title"data-aos="fade-up">
+        <h2> Why Choose Us? </h2>
+        <p>
+            We focus on making mathematics simple, enjoyable, and effective for every student.
+        </p>
+    </div>
+    <div class="features">
+        <div data-aos="zoom-in" data-aos-delay="100">
+            <div class="fue-cards" >
+               <h3> Simple learning </h3>
+               <p>Esay-to-understand lessons with step-by-step explanation.</p>
+            </div>
+        </div>
+        <div data-aos="zoom-in" data-aos-delay="200">
+            <div class="fue-cards">
+               <h3>Smart Practice </h3>
+               <p>Plenty of worksheets and exam-style questions.</p>
+           </div>
+        </div>
+        <div data-aos="zoom-in" data-aos-delay="300">
+             <div class="fue-cards" >
+               <h3>Reguler Follow-up </h3>
+               <p>Reguler assesments and preformance tracking.</p>
+            </div>
+        </div>
+        <div data-aos="zoom-in" data-aos-delay="400">
+             <div class="fue-cards">
+               <h3> Proven Results </h3>
+               <p>Helping students achieve their desired scores.</p>
+            </div>
+        </div>
+
+
+
+
+
+
+    </div>
+ </section>
+<!--===============================================================================-->
+   <hr>
+
+ <!-- sucssses story-->
+ <section class="success-section">
+
+    <div class="container">
+
+        <div class="section-title">
+            <h2>Success Stories</h2>
+            <p>Our Students' Achievements</p>
+        </div>
+
+        <div class="swiper successSwiper">
+
+            <div class="swiper-wrapper">
+
+                {% for story in stories %}
+
+                <div class="swiper-slide">
+
+                    <div class="success-card">
+
+                        <img src="{{ story.image }}"
+                             alt="{{ story.student_name }}">
+
+                        <h3>{{ story.student_name }}</h3>
+
+                        <span class="subject">
+                            {{ story.subject }}
+                        </span>
+
+                        <div class="score-box">
+
+                            <div>
+                                <small>Before</small>
+                                <h4>{{ story.before_score }}</h4>
+                            </div>
+
+                            <div class="arrow">
+                                →
+                            </div>
+
+                            <div>
+                                <small>After</small>
+                                <h4>{{ story.after_score }}</h4>
+                            </div>
+
+                        </div>
+
+                        <div class="improvement">
+                            +{{ story.after_score - story.before_score }} Marks 🚀
+                        </div>
+
+
+                        <p class="review">
+                            ❝{{ story.review }}❞
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!--===============================================================================-->
+
+  <!-- statics-->
+   <section class="statistics">
+    <div class="section-title tit" data-aos="fade-up">
+        <h2> Our Numbers</h2>
+        <p>
+            Numbers that  reflect our experience and student success
+
+        </p>
+    </div>
+    <div class="contanier">
+        <div data-aos="zoom-in" data-aos-delay="100">
+            <div class="st-card">
+                <i class="fa-solid fa-users"></i>
+               <h2 class="counter" data-target="1500" data-symbol="+">0</h2>
+               <p>Students</p>
+            </div>
+        </div>
+        <div data-aos="zoom-in" data-aos-delay="200">
+             <div class="st-card" >
+                <i class="fa-solid fa-award"></i>
+               <h2 class="counter" data-target="10" data-symbol="+">0</h2>
+               <p> Years of Experience</p>
+            </div>
+        </div>
+        <div data-aos="zoom-in" data-aos-delay="300">
+             <div class="st-card" >
+                <i class="fa-solid fa-chart-line"></i>
+               <h2 class="counter" data-target="95" data-symbol="%">0</h2>
+               <p>Success</p>
+            </div>
+        </div>
+        <div data-aos="zoom-in" data-aos-delay="400">
+           <div class="st-card" >
+                <i class="fa-solid fa-location-dot"></i>
+               <h2 class="counter" data-target="3" data-symbol="+">0</h2>
+               <p>Branches</p>
+            </div>
+        </div>
+
+  
+   
+
+    </div>
+   </section>
+
+   <!--===============================================================================-->
+   <hr>
+
+
+
+   <!-- CTA-->
+    <section class="cta">
+        <h2  data-aos="zoom-in">
+
+            Your First Step Starts Here
+
+        </h2>
+        <p  data-aos="fade-up" data-aos-delay="150">
+            Get access to a FREE session and discover how we can help you achieve your goals.
+        </p>
+        <div  data-aos="zoom-in" data-aos-delay="300">
+          <a href="{{url_for('free_session')}}" class="btn btn-outline" >
+              Free Session
+          </a>
+        </div>
+
+    </section>
+<!--===============================================================================-->
+    
+
+    <!--footer-->
+    <footer class="footer">
+        <div class="fo-box">
+            <div  class="fo-about">
+                <h2> Master Abdelfatah</h2>
+                <p> Professional Mathematics instructor 
+                    for
+                     SAT • ACT • EST
+                </p>
+            </div>
+            <div class="fo-links">
+                <h3> Quick Links</h3>
+                <ul>
+                    <li> 
+                        <a href="/">Home</a>
+                    </li>
+                    <li>
+                        <a href="/courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/contact"> Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="fo-social">
+                <h3> Follow us</h3>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/share/1E1nicRkst/">
+                         <i class="fa-brands fa-facebook"></i>
+                        Facebook
+                    </a>
+                    <a href="https://www.instagram.com/abdalftahbrakat/">
+                         <i class="fa-brands fa-instagram"></i>
+                        Instgram
+                    </a>
+                    <a href="https://www.tiktok.com/@abdelfattahmahmo84/">
+                         <i class="fa-brands fa-tiktok"></i>
+                        Tiktok
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="fo-bottom">
+            <p>
+               © 2026 Master Abdelfatah. All Rights Reserved.
+            </p>
+            <p class="developer">
+                Designed & Developed by
+                <a href="https://www.instagram.com/hosney____/">
+
+                    Mohamed Hosney
+                </a>
+
+            </p>
+
+        </div>
+    </footer>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="dashboard-container">
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-square-check"></i> {{ submission.assignment.title }} - Result</h2>
+            <a href="{{ url_for('school.assignments') }}" class="btn">Back to Assignments</a>
+        </div>
+
+        <div class="statistic">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-percent"></i></div>
+                <h2>{{ submission.score }}%</h2>
+                <p>Score</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
+                <h2>{{ submission.total }}</h2>
+                <p>Total Questions</p>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

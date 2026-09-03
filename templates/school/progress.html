@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="dashboard-container">
+
+    <section class="statistic">
+
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
+            <h2>{{ assignments_completed }}</h2>
+            <p>Assignments Completed</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-percent"></i></div>
+            <h2>{{ average_score }}%</h2>
+            <p>Average Score</p>
+        </div>
+
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-chart-line"></i> Course Progress</h2>
+        </div>
+
+        {% if course_progress %}
+        <div class="course-grid">
+            {% for item in course_progress %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-book"></i>
+                    <h3>{{ item.course.name }}</h3>
+                </div>
+                <p>{{ item.done }} / {{ item.total }} assignments completed</p>
+                <p>{{ item.percent }}%</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><p>No courses to show progress for.</p></div>
+        {% endif %}
+    </section>
+
+</div>
+
+{% endblock %}

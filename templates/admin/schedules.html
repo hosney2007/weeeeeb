@@ -1,0 +1,56 @@
+
+
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">schedule</h2>
+            <a href="/admin/add-group" class="btn-admin outline-btn">
+                <i class="fa-solid fa-plus"></i>
+                Add Group
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table=container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                         <th>Courses</th>
+                         <th>branch </th>
+                         <th> days </th>
+                         <th> action</th>
+
+                    </thead>
+                    <tbody>
+                        {%for schedule in schedule%}
+                         <tr>
+                          <td>{{ schedule.course.title }}</td>
+                          <td>{{ schedule.branch.name }}</td>
+                          <td>{{schedule.day1}}-{{schedule.day2}}</td>
+                            <td>
+                                <div class="table-action">
+                                     <form method="post" action="{{ url_for('schedule.delete_schedule', schedule_id=schedule.id)}}" style="display:inline;" onsubmit="return confirm('Delete this group?');">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-danger btn-lg">
+                                            <i class="fa-solid fa-trash"></i>
+                                            delete
+                                        </button>
+                                     </form>
+                                </div>
+                            </td>
+                         </tr> 
+                        {%endfor%}   
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{%endblock%}

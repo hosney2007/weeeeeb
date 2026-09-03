@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">Assignments - {{ course.name }}</h2>
+            <a href="{{ url_for('school_admin.courses') }}" class="btn-admin outline-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Courses
+            </a>
+        </div>
+
+        <div class="booking-form">
+            <form method="post" class="admin-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="input-box">
+                    <label class="form-label">Assignment Title</label>
+                    <input type="text" name="title" placeholder="Assignment title" required>
+                </div>
+
+                <div class="input-box">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" placeholder="Assignment description"></textarea>
+                </div>
+
+                <div class="submit-btn">
+                    <button type="submit">Add Assignment</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="course-grid">
+            {% for assignment in course.assignments %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <h3>{{ assignment.title }}</h3>
+                </div>
+                <p>{{ assignment.description }}</p>
+                <p>{{ assignment.questions|length }} question(s)</p>
+                <div class="course-actions">
+                    <a href="{{ url_for('school_admin.questions', id=assignment.id) }}" class="btn">
+                        <i class="fa-solid fa-list-check"></i> Manage Questions
+                    </a>
+                    <form method="post" action="{{ url_for('school_admin.delete_assignment', id=assignment.id) }}" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="action-btn delete-btn">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state"><p>No assignments yet.</p></div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

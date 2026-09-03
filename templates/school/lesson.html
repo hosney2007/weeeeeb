@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="dashboard-container">
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-video"></i> {{ lesson.title }}</h2>
+            <a href="{{ url_for('school.course', id=lesson.course_id) }}" class="btn">Back to Course</a>
+        </div>
+
+        <div class="profile-card">
+            <div class="profile-info">
+                <p>{{ lesson.description }}</p>
+
+            </div>
+        </div>
+                <div class="video-player">
+                   <iframe
+                   src="{{ lesson.video_url }}"
+                   frameborder="0"
+                   allow="autoplay; fullscreen; picture-in-picture"
+                   allowfullscreen>
+                   </iframe>
+                </div>
+            
+    </section>
+
+</div>
+
+{% endblock %}

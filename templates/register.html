@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+<section class="auth-section">
+
+    <div class="auth-card">
+
+        <h2>Create Account</h2>
+        <p>Join us today</p>
+
+        <form action="{{ url_for('auth.register') }}" method="POST">
+             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+
+            <label>Full Name</label>
+            <input type="text" name="name" placeholder="Enter your full name" required>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Create a password" required>
+
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password" placeholder="Confirm your password" required>
+
+            <label>Grade Code (school students only)</label>
+            <input type="text" name="grade_code" placeholder="e.g. G10-X7K9">
+
+            <button type="submit" class="auth-btn">
+                Register
+            </button>
+
+        </form>
+
+        <div class="auth-links">
+
+            <span>Already have an account?</span>
+            <br>
+
+            <a href="{{ url_for('auth.login') }}">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

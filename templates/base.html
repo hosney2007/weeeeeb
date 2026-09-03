@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ name }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/admin.css')}}">
+
+
+
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="logo">   
+                <a href="/" > 
+                 <img src="{{ url_for('static', filename='image/abdelfatah.png') }}" alt="logo">
+               </a>
+       </div>
+
+        
+        <ul class="nav_links" id="nav-links">
+           <li> <a href="/">HOME</a> </li> 
+           <li> <a href="/about">ABOUT</a> </li> 
+           <li> <a href="/courses">COURSES</a> </li> 
+           <li><a href="/booking">BOOKING</a></li> 
+           <li><a href="/contact">CONTACT</a></li> 
+        </ul>
+
+        {%if current_user.is_authenticated %}
+
+            <div class="nav-account">
+
+                {% if current_user.role == "school_student" %}
+                    <a href="{{ url_for('school.dashboard') }}" class="btn-nav">My School</a>
+                {% else %}
+                    <a href="/dashboard" class="btn-nav">My Account</a>
+                {% endif %}
+
+                <a href="{{ url_for('auth.logout') }}" class="btn-nav btn-nav-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+
+            </div>
+
+        {%else%}
+        
+            <a href="{{url_for('auth.login')}}" class="btn-nav">Login/Register</a>
+    
+        {%endif%}
+
+
+        
+    </nav>
+    {% block body %}
+    {% endblock %}
+
+
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"> </script>
+    <script src="{{url_for('static', filename='java/script.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+
+
+<div class="toast-container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="toast {{ category }}">
+
+                    <span>{{ message }}</span>
+
+                    <button class="close-toast">&times;</button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+</div>
+
+
+
+
+    
+    <div class="mobile-nav">
+
+    <a href="/" class="mobile-item {% if request.path == '/' %}active{% endif %}">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+    </a>
+    <a href="/about" class="mobile-item {% if request.path == '/about' %}active{% endif %}">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>About</span>
+    </a>        
+    <a href="/courses" class="mobile-item {% if request.path.startswith ('/courses') %}active{% endif %}">
+        <i class="fa-solid fa-book-open"></i>
+        <span>Courses</span>
+    </a>
+
+    <a href="/booking" class="mobile-item {% if request.path == '/booking' %}active{% endif %}">
+        <i class="fa-solid fa-calendar-check"></i>
+        <span>Booking</span>
+    </a>
+
+    <a href="/contact" class="mobile-item {% if request.path == '/contact' %}active{% endif %}">
+        <i class="fa-solid fa-phone"></i>
+        <span>Contact</span>
+    </a>
+
+    {% if current_user.is_authenticated %}
+
+   {% if current_user.role == "school_student" %}
+   <a href="{{ url_for('school.dashboard') }}" class="mobile-item {% if request.path.startswith('/school') %}active{% endif %}">
+    <i class="fa-solid fa-graduation-cap"></i>
+    <span>School</span>
+   </a>
+   {% else %}
+   <a href="/dashboard" class="mobile-item {% if request.path == '/dashboard' %}active{% endif %}">
+    <i class="fa-solid fa-user"></i>
+    <span>Account</span>
+   </a>
+   {% endif %}
+
+   <a href="{{ url_for('auth.logout') }}" class="mobile-item">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    <span>Logout</span>
+   </a>
+
+    {% else %}
+
+    <a href="{{ url_for('auth.login') }}" class="mobile-item {% if request.path == url_for('auth.login') %}active{% endif %}">
+        <i class="fa-solid fa-user"></i>
+        <span>Login</span>
+    </a>
+
+    {% endif %}
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container py-4">
+
+    <h2 class="mb-4">Edit Success Story</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <input type="hidden"
+               name="csrf_token"
+               value="{{ csrf_token() }}">
+
+        <div class="mb-3">
+
+            <label>Student Name</label>
+
+            <input
+                class="form-control"
+                name="student_name"
+                value="{{ story.student_name }}"
+                required>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Subject</label>
+
+            <input
+                class="form-control"
+                name="subject"
+                value="{{ story.subject }}"
+                required>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col">
+
+                <label>Before Score</label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    name="before_score"
+                    value="{{ story.before_score }}"
+                    required>
+
+            </div>
+
+            <div class="col">
+
+                <label>After Score</label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    name="after_score"
+                    value="{{ story.after_score }}"
+                    required>
+
+            </div>
+
+        </div>
+
+        <div class="mt-3">
+
+            <label>Review</label>
+
+            <textarea
+                class="form-control"
+                rows="5"
+                name="review"
+                required>{{ story.review }}</textarea>
+
+        </div>
+
+        <div class="mt-3">
+
+            <img
+                src="{{ url_for('static', filename='uploads/' ~ story.image) }}"
+                width="120"
+                class="mb-3 rounded-circle">
+
+            <input
+                type="file"
+                class="form-control"
+                name="image"
+                accept=".jpg,.jpeg,.png,.webp">
+
+        </div>
+
+        <button class="btn btn-warning mt-4">
+
+            Save Changes
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

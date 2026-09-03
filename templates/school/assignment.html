@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div style="max-width:700px; margin:0 auto; padding: 20px 16px; padding-top: 130px; ">
+
+    <h2 style="text-align:center; margin-bottom:6px;">{{ assignment.title }}</h2>
+    <p style="text-align:center; color:var(--gray); margin-bottom:24px;">{{ assignment.description }}</p>
+
+    {% if assignment.questions %}
+
+    <div class="assignment-progress">
+        <span id="progress-label">Answered 0 of {{ assignment.questions|length }}</span>
+        <div class="assignment-progress-track">
+            <div class="assignment-progress-fill" id="progress-fill" style="width:0%;"></div>
+        </div>
+    </div>
+
+    <form method="post" action="{{ url_for('school.submit_assignment', id=assignment.id) }}" id="assignment-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        {% for question in assignment.questions %}
+        <div class="question-card">
+            <div class="question-head">
+                <span class="question-number">{{ loop.index }}</span>
+                <p class="question-text">{{ question.question_text }}</p>
+            </div>
+
+            {% if question.question_type == "mcq" %}
+                <div class="question-options">
+                    {% for option in question.options_list() %}
+                    <label class="option-row">
+                        <input type="radio" name="question_{{ question.id }}" value="{{ option }}" required>
+                        <span>{{ option }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <input type="text" name="question_{{ question.id }}" class="question-text-answer" placeholder="Your answer" required>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="assignment-submit-btn">Submit assignment</button>
+    </form>
+
+    {% else %}
+    <div class="empty-state"><p>No questions added for this assignment yet.</p></div>
+    {% endif %}
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("assignment-form");
+    if (!form) return;
+
+    var total = {{ assignment.questions|length if assignment.questions else 0 }};
+    var progressFill = document.getElementById("progress-fill");
+    var progressLabel = document.getElementById("progress-label");
+
+    function updateProgress() {
+        var answeredNames = new Set();
+
+        form.querySelectorAll('input[type="radio"]:checked').forEach(function (el) {
+            answeredNames.add(el.name);
+        });
+        form.querySelectorAll('input[type="text"]').forEach(function (el) {
+            if (el.value.trim() !== "") answeredNames.add(el.name);
+        });
+
+        var answered = answeredNames.size;
+        progressLabel.textContent = "Answered " + answered + " of " + total;
+        progressFill.style.width = (total ? (answered / total) * 100 : 0) + "%";
+    }
+
+    // نحدث الشريط لما الطالب يختار إجابة أو يكتب في سؤال نصي
+    form.addEventListener("change", updateProgress);
+    form.addEventListener("input", updateProgress);
+
+    // نلوّن الاختيار المحدد بصريًا (بيضاف/بيتشال من غير ما نلمس أي منطق تصحيح موجود)
+    form.querySelectorAll(".option-row").forEach(function (row) {
+        var radio = row.querySelector('input[type="radio"]');
+        radio.addEventListener("change", function () {
+            var name = radio.name;
+            form.querySelectorAll('.option-row input[name="' + name + '"]').forEach(function (r) {
+                r.closest(".option-row").classList.toggle("selected", r.checked);
+            });
+        });
+    });
+});
+</script>
+
+{% endblock %}

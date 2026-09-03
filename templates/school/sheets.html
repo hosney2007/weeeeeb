@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="dashboard-container">
+
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-file"></i> Sheets</h2>
+        </div>
+
+        {% if sheets %}
+        <div class="course-grid">
+            {% for sheet in sheets %}
+            <div class="course-card">
+                <div class="course-card-header">
+                    <i class="fa-solid fa-file"></i>
+                    <h3>{{ sheet.title }}</h3>
+                </div>
+                <p>{{ sheet.course.name }}</p>
+                <a href="{{ url_for('static', filename='uploads/' + sheet.file_url) }}" target="_blank" class="btn">Download</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><p>No sheets yet.</p></div>
+        {% endif %}
+    </section>
+
+</div>
+
+{% endblock %}

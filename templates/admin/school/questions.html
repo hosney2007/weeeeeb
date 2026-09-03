@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">Questions - {{ assignment.title }}</h2>
+            <a href="{{ url_for('school_admin.assignments', id=assignment.course_id) }}" class="btn-admin outline-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Assignments
+            </a>
+        </div>
+
+        <div class="booking-form">
+            <form method="post" class="admin-form" id="question-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="input-box">
+                    <label class="form-label">Question Text</label>
+                    <textarea name="question_text" placeholder="Question text" required></textarea>
+                </div>
+
+                <div class="input-box">
+                    <label class="form-label">Question Type</label>
+                    <select name="question_type" id="question_type" onchange="toggleOptions()">
+                        <option value="mcq">MCQ (multiple choice)</option>
+                        <option value="text">Text (short answer)</option>
+                    </select>
+                </div>
+
+                <div class="input-box" id="options-box">
+                    <label class="form-label">Options (MCQ only)</label>
+                    <input type="text" name="option" placeholder="Option 1">
+                    <input type="text" name="option" placeholder="Option 2">
+                    <input type="text" name="option" placeholder="Option 3">
+                    <input type="text" name="option" placeholder="Option 4">
+                </div>
+
+                <div class="input-box">
+                    <label class="form-label">Correct Answer</label>
+                    <input type="text" name="correct_answer" placeholder="Must match one of the options exactly (for MCQ) or the exact text answer" required>
+                </div>
+
+                <div class="submit-btn">
+                    <button type="submit">Add Question</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-body">
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Type</th>
+                            <th>Options</th>
+                            <th>Correct Answer</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for question in assignment.questions %}
+                        <tr>
+                            <td>{{ question.question_text }}</td>
+                            <td>{{ question.question_type }}</td>
+                            <td>{{ question.options_list()|join(", ") }}</td>
+                            <td>{{ question.correct_answer }}</td>
+                            <td>
+                                <div class="table-action">
+                                    <form method="post" action="{{ url_for('school_admin.delete_question', id=question.id) }}" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5" class="table-empty">No questions yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function toggleOptions() {
+        const type = document.getElementById("question_type").value;
+        const optionsBox = document.getElementById("options-box");
+        optionsBox.style.display = (type === "mcq") ? "block" : "none";
+    }
+    document.addEventListener("DOMContentLoaded", toggleOptions);
+</script>
+
+{% endblock %}
