@@ -9,6 +9,7 @@ from models.recorded_sheet import RecordedSheet
 from models.recorded_assignment import RecordedAssignment
 from models.recorded_question import RecordedQuestion
 from models.recorded_submission import RecordedSubmission
+from models.recorded_submission_answer import RecordedSubmissionAnswer
 from utils.decorators import admin_required, save_sheet_file
 from utils.uploads import upload_course_image
 
@@ -291,6 +292,45 @@ def delete_assignment(id):
     db.session.commit()
     flash("Assignment deleted.", "success")
     return redirect(url_for("recorded.assignments", id=course_id))
+
+#==========SUBMISSIONS (only students who purchased the course)====///
+@recorded.route("/admin/recorded/assignments/<int:id>/submissions")
+@login_required
+@admin_required
+def assignment_submissions(id):
+    assignment = RecordedAssignment.query.get_or_404(id)
+
+    purchasers = Purchase.query.filter_by(
+        recorded_course_id=assignment.recorded_course_id,
+        status="approved"
+    ).all()
+    students = sorted({p.user for p in purchasers}, key=lambda s: s.name)
+
+    submissions = {
+        s.student_id: s for s in RecordedSubmission.query.filter_by(assignment_id=id).all()
+    }
+
+    done_count = len([s for s in students if s.id in submissions])
+
+    return render_template(
+        "admin/recorded/submissions.html",
+        name="Submissions",
+        assignment=assignment,
+        students=students,
+        submissions=submissions,
+        done_count=done_count
+    )
+
+@recorded.route("/admin/recorded/submissions/<int:id>")
+@login_required
+@admin_required
+def submission_detail(id):
+    submission = RecordedSubmission.query.get_or_404(id)
+    return render_template(
+        "admin/recorded/submission_detail.html",
+        name="Submission",
+        submission=submission
+    )
 
 #===============================QUESTIONS=====================================================///
 
@@ -618,21 +658,30 @@ def submit_assignment(id):
     questions = assignment.questions
     correct_count = 0
 
-    for question in questions:
-        answer = request.form.get(f"question_{question.id}", "").strip()
-        if answer.lower() == (question.correct_answer or "").strip().lower():
-            correct_count += 1
-
-    total = len(questions)
-    score = round((correct_count / total) * 100, 2) if total else 0
-
     submission = RecordedSubmission(
         student_id=current_user.id,
         assignment_id=id,
-        score=score,
-        total=total
+        score=0,
+        total=len(questions)
     )
     db.session.add(submission)
+
+    for question in questions:
+        answer = request.form.get(f"question_{question.id}", "").strip()
+        is_correct = answer.lower() == (question.correct_answer or "").strip().lower()
+        if is_correct:
+            correct_count += 1
+
+        db.session.add(RecordedSubmissionAnswer(
+            submission=submission,
+            question_id=question.id,
+            student_answer=answer,
+            is_correct=is_correct
+        ))
+
+    total = len(questions)
+    submission.score = round((correct_count / total) * 100, 2) if total else 0
+
     db.session.commit()
 
     flash("Assignment submitted successfully.", "success")

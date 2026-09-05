@@ -11,6 +11,7 @@ from models.school_lesson import SchoolLesson
 from models.school_sheet import SchoolSheet
 from models.assignment import Assignment
 from models.question import Question
+from models.submission import Submission
 from utils.decorators import admin_required, save_sheet_file
 
 school_admin = Blueprint("school_admin", __name__, url_prefix="/school-admin")
@@ -277,3 +278,40 @@ def delete_question(id):
     db.session.commit()
     flash("Question deleted.", "success")
     return redirect(url_for("school_admin.questions", id=assignment_id))
+
+
+#======SUBMISSIONS (per-grade grid of who did the assignment)=====///
+@school_admin.route("/assignments/<int:id>/submissions")
+@login_required
+@admin_required
+def assignment_submissions(id):
+    assignment = Assignment.query.get_or_404(id)
+    grade = assignment.course.grade
+    students = sorted(grade.students, key=lambda s: s.name) if grade else []
+
+    submissions = {
+        s.student_id: s for s in Submission.query.filter_by(assignment_id=id).all()
+    }
+
+    done_count = len(submissions)
+
+    return render_template(
+        "admin/school/submissions.html",
+        name="Submissions",
+        assignment=assignment,
+        students=students,
+        submissions=submissions,
+        done_count=done_count
+    )
+
+
+@school_admin.route("/submissions/<int:id>")
+@login_required
+@admin_required
+def submission_detail(id):
+    submission = Submission.query.get_or_404(id)
+    return render_template(
+        "admin/school/submission_detail.html",
+        name="Submission",
+        submission=submission
+    )

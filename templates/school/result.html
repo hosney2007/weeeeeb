@@ -22,7 +22,21 @@
                 <h2>{{ submission.total }}</h2>
                 <p>Total Questions</p>
             </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-check"></i></div>
+                <h2>{{ submission.answers|selectattr('is_correct')|list|length }}</h2>
+                <p>Correct</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-xmark"></i></div>
+                <h2>{{ submission.total - (submission.answers|selectattr('is_correct')|list|length) }}</h2>
+                <p>Wrong</p>
+            </div>
         </div>
+
+        {% include "school/_answers_review.html" %}
 
     </section>
 

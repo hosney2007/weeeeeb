@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">{{ assignment.title }} - Submissions</h2>
+            <a href="{{ url_for('school_admin.questions', id=assignment.id) }}" class="btn-admin outline-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Questions
+            </a>
+        </div>
+
+        <div class="statistic">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                <h2>{{ students|length }}</h2>
+                <p>Students in Grade</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-check"></i></div>
+                <h2>{{ done_count }}</h2>
+                <p>Done</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                <h2>{{ students|length - done_count }}</h2>
+                <p>Not Done Yet</p>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Status</th>
+                            <th>Score</th>
+                            <th>Submitted At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        {% set submission = submissions.get(student.id) %}
+                        <tr>
+                            <td>{{ student.name }}</td>
+                            <td>
+                                {% if submission %}
+                                <span class="status approved">Done</span>
+                                {% else %}
+                                <span class="status pending">Not Done</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if submission %}
+                                {{ submission.score }}% ({{ submission.total }} Qs)
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if submission %}
+                                {{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if submission %}
+                                <a href="{{ url_for('school_admin.submission_detail', id=submission.id) }}" class="btn-nav">View Answers</a>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5">No students in this grade yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

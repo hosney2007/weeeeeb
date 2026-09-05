@@ -1,0 +1,23 @@
+{% if submission.answers %}
+<div class="answers-review">
+    <h3 class="answers-review-title">Answers Review</h3>
+
+    {% for ans in submission.answers %}
+    <div class="answer-card {{ 'correct' if ans.is_correct else 'wrong' }}">
+        <p class="answer-question">{{ loop.index }}. {{ ans.question.question_text }}</p>
+
+        <p class="answer-given">
+            <i class="fa-solid {{ 'fa-check' if ans.is_correct else 'fa-xmark' }}"></i>
+            Answer: {{ ans.student_answer or "-" }}
+        </p>
+
+        {% if not ans.is_correct %}
+        <p class="answer-correct">
+            <i class="fa-solid fa-circle-check"></i>
+            Correct answer: {{ ans.question.correct_answer }}
+        </p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

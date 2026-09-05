@@ -8,6 +8,7 @@ from models.school_sheet import SchoolSheet
 from models.assignment import Assignment
 from models.question import Question
 from models.submission import Submission
+from models.submission_answer import SubmissionAnswer
 from utils.decorators import school_student_required
 from models.recorded import Recorded
 from models.booking import Booking
@@ -181,21 +182,30 @@ def submit_assignment(id):
     questions = assignment.questions
     correct_count = 0
 
-    for question in questions:
-        answer = request.form.get(f"question_{question.id}", "").strip()
-        if answer.lower() == (question.correct_answer or "").strip().lower():
-            correct_count += 1
-
-    total = len(questions)
-    score = round((correct_count / total) * 100, 2) if total else 0
-
     submission = Submission(
         student_id=current_user.id,
         assignment_id=id,
-        score=score,
-        total=total
+        score=0,
+        total=len(questions)
     )
     db.session.add(submission)
+
+    for question in questions:
+        answer = request.form.get(f"question_{question.id}", "").strip()
+        is_correct = answer.lower() == (question.correct_answer or "").strip().lower()
+        if is_correct:
+            correct_count += 1
+
+        db.session.add(SubmissionAnswer(
+            submission=submission,
+            question_id=question.id,
+            student_answer=answer,
+            is_correct=is_correct
+        ))
+
+    total = len(questions)
+    submission.score = round((correct_count / total) * 100, 2) if total else 0
+
     db.session.commit()
 
     flash("Assignment submitted successfully.", "success")

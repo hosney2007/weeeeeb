@@ -44,6 +44,9 @@
                     <a href="{{ url_for('school_admin.questions', id=assignment.id) }}" class="btn">
                         <i class="fa-solid fa-list-check"></i> Manage Questions
                     </a>
+                    <a href="{{ url_for('school_admin.assignment_submissions', id=assignment.id) }}" class="btn">
+                        <i class="fa-solid fa-users"></i> Submissions
+                    </a>
                     <form method="post" action="{{ url_for('school_admin.delete_assignment', id=assignment.id) }}" style="display:inline;">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="action-btn delete-btn">

@@ -2551,3 +2551,26 @@ input:focus,select:focus,textarea:focus{border-color:var(--secondary-color)!impo
 .status.approved{background:rgba(46,204,113,.15);color:var(--success);}
 .status.pending{background:rgba(252,163,17,.15);color:var(--warning);}
 .status.rejected{background:rgba(230,57,70,.15);color:var(--danger);}
+
+/*==================================================assignment answers review==================*/
+.answers-review{margin-top:30px;}
+.answers-review-title{
+  font-size:20px;
+  color:var(--primary-color);
+  margin-bottom:16px;
+}
+.answer-card{
+  background:var(--card-bg);
+  border-left:5px solid var(--border-color);
+  border-radius:8px;
+  padding:16px 20px;
+  margin-bottom:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.answer-card.correct{border-left-color:var(--success);}
+.answer-card.wrong{border-left-color:var(--danger);}
+.answer-question{font-weight:700;color:var(--dark-light);margin-bottom:8px;}
+.answer-given{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.answer-card.correct .answer-given i{color:var(--success);}
+.answer-card.wrong .answer-given i{color:var(--danger);}
+.answer-correct{display:flex;align-items:center;gap:8px;color:var(--success);font-weight:600;}

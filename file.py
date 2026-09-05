@@ -28,10 +28,12 @@ from models.school_sheet import SchoolSheet
 from models.assignment import Assignment
 from models.question import Question
 from models.submission import Submission
+from models.submission_answer import SubmissionAnswer
 from models.recorded_assignment import RecordedAssignment
 from models.recorded_sheet import RecordedSheet
 from models.recorded_question import RecordedQuestion
 from models.recorded_submission import RecordedSubmission
+from models.recorded_submission_answer import RecordedSubmissionAnswer
 from extinsion import db, login_manager, mail,csrf,limiter
 import click
 from werkzeug.security import generate_password_hash

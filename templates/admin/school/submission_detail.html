@@ -6,8 +6,10 @@
 
     <section class="dashboard-section">
         <div class="section-header">
-            <h2><i class="fa-solid fa-square-check"></i> {{ submission.assignment.title }} - Result</h2>
-            <a href="{{ url_for('recorded.student_assignments', course_id=submission.assignment.recorded_course_id) }}" class="btn">Back to Assignments</a>
+            <h2><i class="fa-solid fa-square-check"></i> {{ submission.student.name }} - {{ submission.assignment.title }}</h2>
+            <a href="{{ url_for('school_admin.assignment_submissions', id=submission.assignment_id) }}" class="btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Submissions
+            </a>
         </div>
 
         <div class="statistic">
