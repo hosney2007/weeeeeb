@@ -12,9 +12,7 @@
 
             <div class="course-info">
 
-                <div class="mini-book-cover">
-                    <span class="mini-book-title">{{ book.title }}</span>
-                </div>
+                <img src="{{ url_for('static', filename='image/book-cover.jpg') }}" alt="{{ book.title }}" class="mini-book-cover-img">
 
                 <div>
 
@@ -142,6 +140,9 @@
                 <li>Upload the screenshot below.</li>
 
                 <li>Wait for the admin to review and approve your payment.</li>
+                <li>
+                   Delivery takes 2-4 business days
+                </li>
 
             </ul>
 

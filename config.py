@@ -37,5 +37,5 @@ class Config:
     # Payment details shown on the recorded-course payment page. Set these
     # via env vars for the real account details before deploying — the
     # fallback values below are placeholders only.
-    VODAFONE_CASH_NUMBER = os.getenv("VODAFONE_CASH_NUMBER", "01012345678")
+    VODAFONE_CASH_NUMBER = os.getenv("VODAFONE_CASH_NUMBER", "01067474994")
     INSTAPAY_ID = os.getenv("INSTAPAY_ID", "mohamedhosney@instapay")

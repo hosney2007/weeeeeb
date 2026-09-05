@@ -12,16 +12,16 @@ book = Blueprint("book", __name__)
 # Not admin-managed yet — edit this dict (and the cover text in
 # templates/index.html / templates/book_payment.html) to update it.
 BOOK = {
-    "title": "Math Mastery",
-    "subtitle": "Your Ultimate Roadmap to Test Success!",
-    "description": "A complete, video-explained roadmap covering everything you need for EST, SAT and ACT math.",
-    "price": 350,
-    "delivery_price": 50,
+    "title": "Digital SAT Math",
+    "subtitle": "The Ultimate Guide to Digital SAT Math",
+    "description": "Strategies, practice and confidence to master every Digital SAT Math topic — by Mr. Abdelfattah Barakat.",
+    "price": 500,
+    "delivery_price": 100,
     "features": [
-        "EST / SAT / ACT",
-        "Parts 1 & 2",
-        "Comprehensive",
-        "Video Explained",
+        "Complete Concepts",
+        "Smart Strategies",
+        "Practice Questions",
+        "Maximum Score",
     ],
 }
 

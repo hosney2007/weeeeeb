@@ -82,11 +82,7 @@
     <div class="container book-container">
 
         <div class="book-cover-wrap" data-aos="zoom-in">
-            <div class="book-cover">
-                <span class="book-cover-brand">MR ABDELFATAH</span>
-                <h3 class="book-cover-title">MATH<br>MASTERY</h3>
-                <span class="book-cover-sub">EST • SAT • ACT</span>
-            </div>
+            <img src="{{ url_for('static', filename='image/book-cover.jpg') }}" alt="{{ book.title }} book cover" class="book-cover-img">
         </div>
 
         <div class="book-info" data-aos="fade-up">
