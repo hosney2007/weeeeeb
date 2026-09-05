@@ -97,6 +97,9 @@
                 </div>
 
                 <div class="quick-actions" style="margin-bottom:16px;">
+                    <a href="{{ url_for('recorded.course_home', course_id=recorded.id) }}" class="quick-action">
+                        <i class="fa-solid fa-arrow-left"></i> Course Home
+                    </a>
                     <a href="{{ url_for('recorded.student_sheets', course_id=recorded.id) }}" class="quick-action">
                         <i class="fa-solid fa-file"></i> Sheets
                     </a>

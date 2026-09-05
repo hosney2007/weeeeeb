@@ -506,6 +506,34 @@ def _approved_purchase_or_redirect(course_id):
 
     return purchase, None
 
+#==========COURSE HOME (lessons + sheets + assignments hub)=======///
+@recorded.route("/recorded/<int:course_id>")
+@login_required
+def course_home(course_id):
+    recorded_course = Recorded.query.get_or_404(course_id)
+
+    _, blocked = _approved_purchase_or_redirect(course_id)
+    if blocked:
+        return blocked
+
+    lessons = Lessons.query.filter_by(
+        recorded_course_id=course_id
+    ).order_by(Lessons.lesson_order).all()
+
+    submissions = {
+        s.assignment_id: s for s in RecordedSubmission.query.filter_by(
+            student_id=current_user.id
+        ).all()
+    }
+
+    return render_template(
+        "recorded/course.html",
+        recorded=recorded_course,
+        lessons=lessons,
+        submissions=submissions,
+        name=recorded_course.title
+    )
+
 #==========STUDENT SHEETS=======///
 @recorded.route("/recorded/<int:course_id>/sheets")
 @login_required

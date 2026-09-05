@@ -19,6 +19,8 @@ from models.branch import Branch
 from routes.admin import admin
 from routes.school import school
 from routes.admin_school import school_admin
+from routes.book import book, BOOK
+from models.book_purchase import BookPurchase
 from models.grade import Grade
 from models.school_course import SchoolCourse
 from models.school_lesson import SchoolLesson
@@ -70,6 +72,7 @@ app.register_blueprint(recorded)
 app.register_blueprint(message)
 app.register_blueprint(school)
 app.register_blueprint(school_admin)
+app.register_blueprint(book)
 
 #admin accuont===========================================///
 
@@ -143,6 +146,17 @@ with app.app_context():
             )
             db.session.commit()
 
+    # Add delivery fields to book_purchase for databases created before the
+    # book payment page started collecting a delivery address.
+    if inspector.has_table("book_purchase"):
+        book_purchase_columns = {c["name"] for c in inspector.get_columns("book_purchase")}
+        for column_name in ("recipient_name", "phone", "address"):
+            if column_name not in book_purchase_columns:
+                db.session.execute(
+                    text(f'ALTER TABLE "book_purchase" ADD COLUMN {column_name} TEXT')
+                )
+        db.session.commit()
+
     # Indexes on foreign-key columns speed up joins/filters as tables grow.
     # CREATE INDEX IF NOT EXISTS is supported on both SQLite and PostgreSQL,
     # so this is safe to run on every startup and on databases that existed
@@ -184,7 +198,20 @@ def home():
     ).order_by(
         SuccessStory.id.desc()
     ).limit(6).all()
-    return render_template('index.html', name = 'Home', stories=stories)
+
+    book_purchase = None
+    if current_user.is_authenticated:
+        book_purchase = BookPurchase.query.filter_by(
+            user_id=current_user.id
+        ).first()
+
+    return render_template(
+        'index.html',
+        name = 'Home',
+        stories=stories,
+        book=BOOK,
+        book_purchase=book_purchase
+    )
 
 @app.route("/about")
 def about():

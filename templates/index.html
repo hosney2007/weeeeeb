@@ -76,6 +76,46 @@
 <!--===============================================================================-->
    <hr>
 
+ <!-- book -->
+ <section class="book-section" data-aos="">
+
+    <div class="container book-container">
+
+        <div class="book-cover-wrap" data-aos="zoom-in">
+            <div class="book-cover">
+                <span class="book-cover-brand">MR ABDELFATAH</span>
+                <h3 class="book-cover-title">MATH<br>MASTERY</h3>
+                <span class="book-cover-sub">EST • SAT • ACT</span>
+            </div>
+        </div>
+
+        <div class="book-info" data-aos="fade-up">
+            <span class="book-tag">Exclusive Book</span>
+            <h2>{{ book.subtitle }}</h2>
+
+            <ul class="book-features">
+                {% for feature in book.features %}
+                <li><i class="fa-solid fa-circle-check"></i> {{ feature }}</li>
+                {% endfor %}
+            </ul>
+
+            {% if book_purchase and book_purchase.status == "approved" %}
+            <span class="status approved">You own this book ✅</span>
+            {% elif book_purchase and book_purchase.status == "waiting" %}
+            <a href="{{ url_for('book.buy') }}" class="btn">Waiting Approval</a>
+            {% elif book_purchase and book_purchase.status == "rejected" %}
+            <a href="{{ url_for('book.buy') }}" class="btn">Upload Payment Again</a>
+            {% else %}
+            <a href="{{ url_for('book.buy') }}" class="btn">Buy Book</a>
+            {% endif %}
+        </div>
+
+    </div>
+
+ </section>
+<!--===============================================================================-->
+   <hr>
+
  <!-- sucssses story-->
  <section class="success-section">
 

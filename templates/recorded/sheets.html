@@ -7,8 +7,8 @@
     <section class="dashboard-section">
         <div class="section-header">
             <h2><i class="fa-solid fa-file"></i> Sheets - {{ recorded.title }}</h2>
-            <a href="{{ url_for('recorded.course_lessons', course_id=recorded.id) }}" class="btn">
-                <i class="fa-solid fa-arrow-left"></i> Back to Lessons
+            <a href="{{ url_for('recorded.course_home', course_id=recorded.id) }}" class="btn">
+                <i class="fa-solid fa-arrow-left"></i> Back to Course
             </a>
         </div>
 

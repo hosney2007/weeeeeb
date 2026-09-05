@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<section class="payment-page">
+
+    <div class="container">
+
+        <div class="payment-card">
+
+            <!-- Book Info -->
+
+            <div class="course-info">
+
+                <div class="mini-book-cover">
+                    <span class="mini-book-title">{{ book.title }}</span>
+                </div>
+
+                <div>
+
+                    <h1>{{ book.title }}</h1>
+
+                    <p>{{ book.description }}</p>
+
+                    <div class="price-breakdown">
+                        <p><span>Book price</span><span>{{ "{:,.0f}".format(book.price) }} EGP</span></p>
+                        <p><span>Delivery</span><span>{{ "{:,.0f}".format(book.delivery_price) }} EGP</span></p>
+                        <h3 class="price"><span>Total</span><span>{{ "{:,.0f}".format(total_price) }} EGP</span></h3>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            {% if purchase and purchase.status == "approved" %}
+
+            <div class="empty-state">
+                <h3>You already own this book ✅</h3>
+                <p>Message us on WhatsApp / Facebook to arrange collecting your copy if you haven't already.</p>
+            </div>
+
+            {% elif purchase and purchase.status == "waiting" %}
+
+            <div class="empty-state">
+                <h3>Payment under review</h3>
+                <p>We're checking your payment proof — this usually takes a few hours.</p>
+            </div>
+
+            {% else %}
+
+            {% if purchase and purchase.status == "rejected" %}
+            <div class="empty-state">
+                <h3>Your last payment was rejected</h3>
+                <p>Please upload a valid payment screenshot below.</p>
+            </div>
+            {% endif %}
+
+            <!-- Payment Methods -->
+
+            <h2 class="section-title">
+
+                Payment Methods
+
+            </h2>
+
+            <div class="payment-method">
+
+                <div class="payment-icon">
+
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+
+                </div>
+
+                <div class="payment-details">
+
+                    <h4>Vodafone Cash</h4>
+
+                    <p id="vodafone-number">
+
+                        {{ vodafone_cash_number }}
+
+                    </p>
+
+                </div>
+
+                <button type="button" onclick="copyText('vodafone-number')">
+
+                    Copy
+
+                </button>
+
+            </div>
+
+            <div class="payment-method">
+
+                <div class="payment-icon">
+
+                    <i class="fa-solid fa-building-columns"></i>
+
+                </div>
+
+                <div class="payment-details">
+
+                    <h4>InstaPay</h4>
+
+                    <p id="instapay-id">
+
+                        {{ instapay_id }}
+
+                    </p>
+
+                </div>
+
+                <button type="button" onclick="copyText('instapay-id')">
+
+                    Copy
+
+                </button>
+
+            </div>
+
+            <hr>
+
+            <!-- Instructions -->
+
+            <h2 class="section-title">
+
+                Payment Instructions
+
+            </h2>
+
+            <ul class="instructions">
+
+                <li>Fill in your delivery details below.</li>
+
+                <li>Transfer the total amount ({{ "{:,.0f}".format(total_price) }} EGP) using one of the payment methods above.</li>
+
+                <li>Take a screenshot after the payment is completed.</li>
+
+                <li>Upload the screenshot below.</li>
+
+                <li>Wait for the admin to review and approve your payment.</li>
+
+            </ul>
+
+            <hr>
+
+            <!-- Upload Form -->
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+                <h2 class="section-title">
+
+                    Delivery Details
+
+                </h2>
+
+                <div class="upload-box">
+
+                    <label>
+
+                        Recipient Name
+
+                    </label>
+
+                    <input type="text"
+                           name="recipient_name"
+                           value="{{ form_values.recipient_name }}"
+                           placeholder="Full name to receive the book"
+                           required>
+
+                </div>
+
+                <div class="upload-box">
+
+                    <label>
+
+                        Phone Number
+
+                    </label>
+
+                    <input type="tel"
+                           name="phone"
+                           value="{{ form_values.phone }}"
+                           placeholder="e.g. 01012345678"
+                           required>
+
+                </div>
+
+                <div class="notes">
+
+                    <label>
+
+                        Delivery Address
+
+                    </label>
+
+                    <textarea
+                        name="address"
+                        rows="3"
+                        placeholder="Governorate, city, street, building, landmark..."
+                        required>{{ form_values.address }}</textarea>
+
+                </div>
+
+                <hr>
+
+                <div class="upload-box">
+
+                    <label>
+
+                        Upload Payment Screenshot
+
+                    </label>
+
+                    <input type="file"
+                           name="payment_image"
+                           accept="image/*"
+                           required>
+
+                </div>
+
+                <div class="notes">
+
+                    <label>
+
+                        Notes (Optional)
+
+                    </label>
+
+                    <textarea
+                        name="notes"
+                        rows="4"
+                        placeholder="Write any note for the admin...">{{ form_values.notes }}</textarea>
+
+                </div>
+
+                <button type="submit"
+                        class="upload-btn">
+
+                    Upload Payment
+
+                </button>
+
+            </form>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

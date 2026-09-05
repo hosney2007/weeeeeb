@@ -40,7 +40,7 @@
                     </button>
                     {%elif purchase.status =="approved" %}
 
-                    <a href="{{ url_for('recorded.course_lessons', course_id=recorded.id) }}"
+                    <a href="{{ url_for('recorded.course_home', course_id=recorded.id) }}"
                      class="btn btn-primary">
                      Watch Course
                    </a>

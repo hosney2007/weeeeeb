@@ -12,6 +12,7 @@ from datetime import datetime
 from models.branch import Branch
 from models.schedaule import Schedule
 from models.success_story import SuccessStory
+from models.book_purchase import BookPurchase
 from utils.decorators import admin_required
 from utils.uploads import upload_course_image
 
@@ -82,6 +83,10 @@ def admin_dashboard():
         else 0
     )
 
+    pending_book_orders = BookPurchase.query.filter(
+        BookPurchase.status.in_(["pending", "waiting"])
+    ).count()
+
     total_messages = Message.query.count()
 
     recent_bookings = Booking.query.order_by(
@@ -105,6 +110,7 @@ def admin_dashboard():
         active_students=active_students,
         pending_bookings=pending_bookings,
         pending_orders=pending_orders,
+        pending_book_orders=pending_book_orders,
         monthly_revenue=monthly_revenue,
         today_bookings=today_bookings,
         today_schedules=today_schedules,

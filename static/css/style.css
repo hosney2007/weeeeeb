@@ -2436,3 +2436,118 @@ input:focus,select:focus,textarea:focus{border-color:var(--secondary-color)!impo
 }
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important;}}
+
+/*==================================================book section==================*/
+.book-section{padding:60px 8%;}
+.book-container{
+  display:grid;
+  grid-template-columns:340px 1fr;
+  gap:60px;
+  align-items:center;
+}
+.book-cover-wrap{display:flex;justify-content:center;}
+.book-cover{
+  width:260px;
+  height:360px;
+  border-radius:6px 14px 14px 6px;
+  background:linear-gradient(160deg,var(--primary-color),var(--dark-light));
+  border-left:10px solid var(--secondary-color);
+  box-shadow:0 25px 50px rgba(6,17,35,.35),0 4px 0 rgba(0,0,0,.15) inset;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  padding:24px;
+  text-align:center;
+  transform:perspective(900px) rotateY(-8deg);
+  transition:transform .35s ease;
+}
+.book-cover:hover{transform:perspective(900px) rotateY(0deg);}
+.book-cover-brand{
+  color:var(--secondary-color);
+  letter-spacing:2px;
+  font-size:13px;
+  font-weight:700;
+}
+.book-cover-title{
+  color:var(--white);
+  font-size:34px;
+  line-height:1.2;
+  font-weight:800;
+  letter-spacing:1px;
+}
+.book-cover-sub{
+  color:rgba(255,255,255,.75);
+  font-size:13px;
+  letter-spacing:3px;
+}
+.book-info .book-tag{
+  display:inline-block;
+  color:var(--secondary-color);
+  font-weight:700;
+  letter-spacing:2px;
+  font-size:13px;
+  margin-bottom:10px;
+}
+.book-info h2{
+  font-size:32px;
+  color:var(--primary-color);
+  margin-bottom:22px;
+  line-height:1.35;
+}
+.book-features{
+  list-style:none;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px 24px;
+  margin-bottom:28px;
+  padding:0;
+}
+.book-features li{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:600;
+  color:var(--dark-light);
+}
+.book-features li i{color:var(--secondary-color);font-size:18px;}
+
+@media (max-width:900px){
+  .book-container{grid-template-columns:1fr;text-align:center;}
+  .book-features{grid-template-columns:1fr;justify-items:center;}
+}
+
+/* mini cover used on the book payment page */
+.mini-book-cover{
+  width:90px;
+  min-width:90px;
+  height:120px;
+  border-radius:4px 10px 10px 4px;
+  background:linear-gradient(160deg,var(--primary-color),var(--dark-light));
+  border-left:5px solid var(--secondary-color);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px;
+  text-align:center;
+}
+.mini-book-title{
+  color:var(--white);
+  font-weight:700;
+  font-size:12px;
+  line-height:1.3;
+}
+
+/*==================================================status badges==================*/
+.status{
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.status.approved{background:rgba(46,204,113,.15);color:var(--success);}
+.status.pending{background:rgba(252,163,17,.15);color:var(--warning);}
+.status.rejected{background:rgba(230,57,70,.15);color:var(--danger);}
