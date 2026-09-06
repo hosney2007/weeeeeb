@@ -378,6 +378,11 @@ def server_error(e):
     app.logger.error("Unhandled server error: %s", e, exc_info=True)
     return render_template("500.html", name="Server Error"), 500
 
+@app.errorhandler(429)
+def not_found(e):
+    return render_template("429.html", name="too many attempts"), 429
+
+
 #app run==============///
 if __name__ == '__main__':
     app.run(debug=True ,host="0.0.0.0" ,port=9000)
