@@ -16,4 +16,4 @@ Disallow: /reset-password
 Disallow: /forgot-password
 Disallow: /static/uploads/
 
-Sitemap: https://YOUR-DOMAIN.com/sitemap.xml
+Sitemap: https://abdelfatahacademy.com.com/sitemap.xml
