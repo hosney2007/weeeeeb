@@ -5,6 +5,7 @@ def register(client, **overrides):
     data = {
         "name": "Ahmed Student",
         "email": "ahmed@example.com",
+        "phone": "01012345678",
         "password": "password123",
         "confirm_password": "password123",
         "grade_code": "",
@@ -24,6 +25,13 @@ class TestRegister:
             assert user is not None
             assert user.is_verified is False
             assert user.role == "student"
+            assert user.phone == "01012345678"
+
+    def test_register_rejects_invalid_phone(self, client, app):
+        register(client, phone="12345")
+
+        with app.app_context():
+            assert User.query.filter_by(email="ahmed@example.com").first() is None
 
     def test_register_rejects_mismatched_passwords(self, client, app):
         register(client, confirm_password="something-else")

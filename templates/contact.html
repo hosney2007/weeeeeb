@@ -80,7 +80,10 @@
                 placeholder="Full Name">
                 <input type="tel"
                 name="number"
-                placeholder="Phone Number">
+                placeholder="Phone Number"
+                pattern="^01[0125][0-9]{8}$"
+                title="Enter a valid 11-digit phone number starting with 010, 011, 012 or 015"
+                required>
                 <select name="course">
                     <option value="">Select Course</option>
                     <option value="sat">SAT</option>

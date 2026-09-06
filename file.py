@@ -37,6 +37,7 @@ from models.recorded_submission_answer import RecordedSubmissionAnswer
 from models.notification import Notification
 from routes.notifications import notifications
 from utils.notifications import notify_admin
+from utils.validators import is_valid_phone, clean_phone
 from extinsion import db, login_manager, mail,csrf,limiter
 import click
 from werkzeug.security import generate_password_hash
@@ -150,6 +151,16 @@ with app.app_context():
         if "grade_id" not in existing_columns:
             db.session.execute(
                 text(f'ALTER TABLE {q("user")} ADD COLUMN grade_id INTEGER REFERENCES {q("grade")}(id)')
+            )
+            db.session.commit()
+
+    # Add the "phone" column to user for databases created before
+    # registration started collecting a phone number.
+    if inspector.has_table("user"):
+        user_columns = {c["name"] for c in inspector.get_columns("user")}
+        if "phone" not in user_columns:
+            db.session.execute(
+                text(f'ALTER TABLE {q("user")} ADD COLUMN {q("phone")} VARCHAR(20)')
             )
             db.session.commit()
 
@@ -267,7 +278,17 @@ def free_session():
 @limiter.limit("5 per minute", methods=["POST"])
 def booking():
     if request.method == "POST":
-         phone = request.form["student_number"]
+         phone = clean_phone(request.form["student_number"])
+         parent_phone = clean_phone(request.form["parent_number"])
+
+         if not is_valid_phone(phone):
+             flash("Please enter a valid student phone number (e.g. 01012345678).", "danger")
+             return redirect(url_for("booking"))
+
+         if not is_valid_phone(parent_phone):
+             flash("Please enter a valid parent phone number (e.g. 01012345678).", "danger")
+             return redirect(url_for("booking"))
+
          schedule = Schedule.query.get_or_404(
              request.form["schedule_id"]
          )
@@ -287,8 +308,8 @@ def booking():
          booking=Booking(
           user_id = current_user.id if current_user.is_authenticated else None,
           student_name = request.form["student_name"],
-          student_number = request.form["student_number"],
-          parent_number = request.form["parent_number"],
+          student_number = phone,
+          parent_number = parent_phone,
           grade = request.form["grade"],
           mode = mode,
           addational_notes= request.form["addational_notes"],
@@ -302,8 +323,8 @@ def booking():
          notify_admin(
              subject=f"New booking: {booking.course.title if booking.course else 'a course'}",
              lines=[
-                 f"Student: {request.form['student_name']} ({request.form['student_number']})",
-                 f"Parent: {request.form['parent_number']}",
+                 f"Student: {request.form['student_name']} ({phone})",
+                 f"Parent: {parent_phone}",
                  f"Grade: {request.form['grade']}",
                  f"Mode: {mode}",
                  f"Notes: {request.form.get('addational_notes') or '-'}",
@@ -322,9 +343,14 @@ def booking():
 @limiter.limit("5 per minute", methods=["POST"])
 def contact():
     if request.method == "POST":
+         contact_number = clean_phone(request.form["number"])
+         if not is_valid_phone(contact_number):
+             flash("Please enter a valid phone number (e.g. 01012345678).", "danger")
+             return redirect(url_for("contact"))
+
          message=Message(
           name = request.form["name"],
-          number = request.form["number"],
+          number = contact_number,
           message= request.form["message"],
           course = request.form["course"],
          )

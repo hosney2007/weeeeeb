@@ -188,6 +188,8 @@
                            name="phone"
                            value="{{ form_values.phone }}"
                            placeholder="e.g. 01012345678"
+                           pattern="^01[0125][0-9]{8}$"
+                           title="Enter a valid 11-digit phone number starting with 010, 011, 012 or 015"
                            required>
 
                 </div>

@@ -28,11 +28,17 @@
             </div>
             <div class="input-box">
                 <label> student Number</label>
-                <input type="text" placeholder="Enter student number" name="student_number" required>
+                <input type="tel" placeholder="e.g. 01012345678" name="student_number"
+                       pattern="^01[0125][0-9]{8}$"
+                       title="Enter a valid 11-digit phone number starting with 010, 011, 012 or 015"
+                       required>
             </div>
             <div class="input-box">
                 <label>parent Number</label>
-                <input type="text" placeholder="Enter parent number" name="parent_number" required>
+                <input type="tel" placeholder="e.g. 01012345678" name="parent_number"
+                       pattern="^01[0125][0-9]{8}$"
+                       title="Enter a valid 11-digit phone number starting with 010, 011, 012 or 015"
+                       required>
             </div>
             <div class="input-box">
                 <label>Student Grade</label>

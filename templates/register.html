@@ -20,6 +20,12 @@
             <label>Email</label>
             <input type="email" name="email" placeholder="Enter your email" required>
 
+            <label>Phone Number</label>
+            <input type="tel" name="phone" placeholder="e.g. 01012345678"
+                   pattern="^01[0125][0-9]{8}$"
+                   title="Enter a valid 11-digit phone number starting with 010, 011, 012 or 015"
+                   required>
+
             <label>Password</label>
             <input type="password" name="password" placeholder="Create a password" required>
 

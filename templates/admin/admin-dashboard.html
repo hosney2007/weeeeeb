@@ -626,7 +626,7 @@
             <h3>{{ active_students }}</h3>
             <p>Verified Students</p>
 
-            <a href="{{ url_for('auth.dashboard') }}"
+            <a href="{{ url_for('admin.verified_students') }}"
                class="stat-link">
                 Students →
             </a>
@@ -880,6 +880,12 @@
                        class="quick-action">
                         <i class="fas fa-calendar"></i>
                         Manage Bookings
+                    </a>
+
+                    <a href="{{ url_for('admin.verified_students') }}"
+                       class="quick-action">
+                        <i class="fas fa-user-graduate"></i>
+                        Verified Students
                     </a>
 
                     <a href="{{ url_for('school_admin.grades') }}"

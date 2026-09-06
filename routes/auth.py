@@ -14,6 +14,7 @@ from extinsion import mail,limiter
 from extinsion import db
 from models.user import User
 from models.grade import Grade
+from utils.validators import is_valid_phone, clean_phone
 
 auth = Blueprint("auth" ,__name__)
 
@@ -133,6 +134,7 @@ def register():
     if request.method == "POST":
         name = request.form["name"].strip()
         email = request.form["email"].strip().lower()
+        phone = clean_phone(request.form.get("phone", ""))
         password = request.form["password"]
         confirm_password = request.form.get("confirm_password", "")
         grade_code = request.form.get("grade_code", "").strip().upper()
@@ -143,6 +145,10 @@ def register():
 
         if not EMAIL_REGEX.match(email):
             flash("Please enter a valid email address.", "danger")
+            return redirect(url_for("auth.register"))
+
+        if not is_valid_phone(phone):
+            flash("Please enter a valid phone number (e.g. 01012345678).", "danger")
             return redirect(url_for("auth.register"))
 
         if password != confirm_password:
@@ -173,6 +179,7 @@ def register():
         user = User(
             name=name,
             email=email,
+            phone=phone,
             password=hashed_password,
             role=role,
             grade_id=grade_id

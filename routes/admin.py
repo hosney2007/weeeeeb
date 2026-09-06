@@ -120,6 +120,23 @@ def admin_dashboard():
         recent_messages=recent_messages
     )
 
+#==============verified students==================////
+
+@admin.route("/admin/students")
+@login_required
+@admin_required
+def verified_students():
+    students = User.query.filter_by(
+        role="student",
+        is_verified=True
+    ).order_by(User.name.asc()).all()
+
+    return render_template(
+        "admin/students.html",
+        students=students,
+        name="Verified Students"
+    )
+
 #==============addd courses==================////
 
 @admin.route("/admin/add-course", methods=["GET", "POST"])

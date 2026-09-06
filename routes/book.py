@@ -6,6 +6,7 @@ from models.book_purchase import BookPurchase
 from utils.decorators import admin_required
 from utils.uploads import upload_course_image
 from utils.notifications import notify_admin, notify_student
+from utils.validators import is_valid_phone, clean_phone
 
 book = Blueprint("book", __name__)
 
@@ -44,7 +45,7 @@ def buy():
         image = request.files.get("payment_image")
         notes = request.form.get("notes", "").strip()
         recipient_name = request.form.get("recipient_name", "").strip()
-        phone = request.form.get("phone", "").strip()
+        phone = clean_phone(request.form.get("phone", ""))
         address = request.form.get("address", "").strip()
 
         form_values = {
@@ -56,6 +57,8 @@ def buy():
 
         if not recipient_name or not phone or not address:
             flash("Please fill in the recipient name, phone and delivery address.", "danger")
+        elif not is_valid_phone(phone):
+            flash("Please enter a valid phone number (e.g. 01012345678).", "danger")
         elif not image or image.filename == "":
             flash("Please choose a payment screenshot.", "danger")
         else:
