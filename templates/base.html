@@ -34,6 +34,13 @@
 
             <div class="nav-account">
 
+                <a href="{{ url_for('notifications.list_notifications') }}" class="notification-bell">
+                    <i class="fa-solid fa-bell"></i>
+                    {% if unread_notifications_count and unread_notifications_count > 0 %}
+                    <span class="notification-badge">{{ unread_notifications_count if unread_notifications_count < 10 else '9+' }}</span>
+                    {% endif %}
+                </a>
+
                 {% if current_user.role == "school_student" %}
                     <a href="{{ url_for('school.dashboard') }}" class="btn-nav">My School</a>
                 {% else %}
@@ -121,6 +128,14 @@
 
     {% if current_user.is_authenticated %}
 
+   <a href="{{ url_for('notifications.list_notifications') }}" class="mobile-item {% if request.path == '/notifications' %}active{% endif %}" style="position:relative;">
+    <i class="fa-solid fa-bell"></i>
+    {% if unread_notifications_count and unread_notifications_count > 0 %}
+    <span class="notification-badge notification-badge-mobile">{{ unread_notifications_count if unread_notifications_count < 10 else '9+' }}</span>
+    {% endif %}
+    <span>Alerts</span>
+   </a>
+
    {% if current_user.role == "school_student" %}
    <a href="{{ url_for('school.dashboard') }}" class="mobile-item {% if request.path.startswith('/school') %}active{% endif %}">
     <i class="fa-solid fa-graduation-cap"></i>
@@ -133,10 +148,7 @@
    </a>
    {% endif %}
 
-   <a href="{{ url_for('auth.logout') }}" class="mobile-item">
-    <i class="fa-solid fa-right-from-bracket"></i>
-    <span>Logout</span>
-   </a>
+
 
     {% else %}
 

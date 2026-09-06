@@ -18,24 +18,31 @@ class Config:
     # Some providers still expose the legacy postgres:// scheme.
     if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
         SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://" + SQLALCHEMY_DATABASE_URI[len("postgres://"):]
-    if SQLALCHEMY_DATABASE_URI.startswith("sqlite") and os.getenv("VERCEL"):
+    # Hostinger (and most hosts) give a plain mysql:// URL; SQLAlchemy needs a
+    # driver name in the scheme, so default it to PyMySQL if none was given.
+    if SQLALCHEMY_DATABASE_URI.startswith("mysql://"):
+        SQLALCHEMY_DATABASE_URI = "mysql+pymysql://" + SQLALCHEMY_DATABASE_URI[len("mysql://"):]
+    if SQLALCHEMY_DATABASE_URI.startswith("sqlite"):
         print(
-            "⚠️  WARNING: Running on Vercel with SQLite. Vercel's filesystem is "
-            "ephemeral/read-only, so data written to database.db will NOT persist "
-            "between deploys or cold starts. Set DATABASE_URL to a hosted Postgres "
-            "database (e.g. Supabase/Neon) before deploying."
+            "⚠️  WARNING: Running on SQLite. This is fine for local development, "
+            "but on a real deployment set DATABASE_URL to your Hostinger MySQL "
+            "database instead (see .env.example) so data isn't lost or shared "
+            "incorrectly between app restarts/workers."
         )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MAIL_SERVER ="smtp.gmail.com"
-    MAIL_PORT = 587
-    MAIL_USE_TLS = True
-    MAIL_USE_SSL = False
+    MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+    MAIL_PORT = int(os.getenv("MAIL_PORT", "587"))
+    MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", "true").lower() == "true"
+    MAIL_USE_SSL = os.getenv("MAIL_USE_SSL", "false").lower() == "true"
     MAIL_USERNAME = ("ma0332897@gmail.com")
     MAIL_PASSWORD= ("qqcyupvnevpxyusj")
     MAIL_DEFAULT_SENDER= "ma0332897@gmail.com"
+    # Where "new order" emails go (course/book purchases, new bookings).
+    # Defaults to the same inbox used to send mail if not set separately.
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", MAIL_USERNAME)
 
     # Payment details shown on the recorded-course payment page. Set these
     # via env vars for the real account details before deploying — the
     # fallback values below are placeholders only.
-    VODAFONE_CASH_NUMBER = os.getenv("VODAFONE_CASH_NUMBER", "01067474994")
+    VODAFONE_CASH_NUMBER = os.getenv("VODAFONE_CASH_NUMBER", "01012345678")
     INSTAPAY_ID = os.getenv("INSTAPAY_ID", "mohamedhosney@instapay")

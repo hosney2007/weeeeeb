@@ -12,6 +12,7 @@ from models.recorded_submission import RecordedSubmission
 from models.recorded_submission_answer import RecordedSubmissionAnswer
 from utils.decorators import admin_required, save_sheet_file
 from utils.uploads import upload_course_image
+from utils.notifications import notify_admin, notify_student
 
 recorded = Blueprint("recorded",__name__)
 
@@ -398,6 +399,13 @@ def approve_order(id):
     order = Purchase.query.get_or_404(id)
     order.status = "approved"
     db.session.commit()
+    notify_student(
+        order.user,
+        title="Your course purchase has been approved",
+        message=f"Your payment for '{order.recorded.title}' has been approved. You can now access the course.",
+        link_endpoint="recorded.course_home",
+        link_kwargs={"course_id": order.recorded_course_id}
+    )
     return redirect(url_for("recorded.orders"))
 
 #==========REJECT ORDERS====///
@@ -408,6 +416,13 @@ def reject_order(id):
     order = Purchase.query.get_or_404(id)
     order.status = "rejected"
     db.session.commit()
+    notify_student(
+        order.user,
+        title="Your course purchase needs attention",
+        message=f"Your payment for '{order.recorded.title}' couldn't be approved. Please check your payment proof and try again.",
+        link_endpoint="recorded.payment",
+        link_kwargs={"id": order.recorded_course_id}
+    )
     return redirect(url_for("recorded.orders"))
 
 #==============DELETE order======///
@@ -463,6 +478,16 @@ def payment(id):
             purchase.status = "waiting"
 
             db.session.commit()
+
+            notify_admin(
+                subject=f"New course order: {recorded.title}",
+                lines=[
+                    f"Student: {current_user.name} ({current_user.email})",
+                    f"Course: {recorded.title}",
+                    f"Notes: {notes or '-'}",
+                    f"Review it here: {url_for('recorded.orders', _external=True)}",
+                ]
+            )
 
             flash("Payment uploaded successfully.", "success")
 

@@ -34,6 +34,9 @@ from models.recorded_sheet import RecordedSheet
 from models.recorded_question import RecordedQuestion
 from models.recorded_submission import RecordedSubmission
 from models.recorded_submission_answer import RecordedSubmissionAnswer
+from models.notification import Notification
+from routes.notifications import notifications
+from utils.notifications import notify_admin
 from extinsion import db, login_manager, mail,csrf,limiter
 import click
 from werkzeug.security import generate_password_hash
@@ -75,6 +78,17 @@ app.register_blueprint(message)
 app.register_blueprint(school)
 app.register_blueprint(school_admin)
 app.register_blueprint(book)
+app.register_blueprint(notifications)
+
+@app.context_processor
+def inject_unread_notifications_count():
+    if current_user.is_authenticated:
+        count = Notification.query.filter_by(
+            user_id=current_user.id, is_read=False
+        ).count()
+    else:
+        count = 0
+    return dict(unread_notifications_count=count)
 
 #admin accuont===========================================///
 
@@ -117,15 +131,25 @@ with app.app_context():
     db.create_all()
     # migration خفيفة: نضيف عمود grade_id لجدول الـ user لو مش موجود (لقاعدة بيانات كانت شغالة قبل التحديث)
     from sqlalchemy import inspect, text
+    from sqlalchemy.exc import OperationalError, ProgrammingError
     inspector = inspect(db.engine)
+
+    # Identifiers must be quoted differently per database (SQLite/PostgreSQL use
+    # double quotes, MySQL/MariaDB use backticks). Ask SQLAlchemy's own dialect
+    # for the right quoting instead of hardcoding one style, so these
+    # migrations work unchanged whether the app runs on SQLite, Postgres, or
+    # a Hostinger MySQL database.
+    quote = db.engine.dialect.identifier_preparer.quote
+
+    def q(name):
+        return quote(name)
+
     # Lightweight schema migration for databases created before grade support.
-    # SQLAlchemy quotes the ``user`` table itself, but raw SQL must quote it too
-    # because USER is reserved on PostgreSQL.
     if inspector.has_table("user") and inspector.has_table("grade"):
         existing_columns = {c["name"] for c in inspector.get_columns("user")}
         if "grade_id" not in existing_columns:
             db.session.execute(
-                text('ALTER TABLE "user" ADD COLUMN grade_id INTEGER REFERENCES grade(id)')
+                text(f'ALTER TABLE {q("user")} ADD COLUMN grade_id INTEGER REFERENCES {q("grade")}(id)')
             )
             db.session.commit()
 
@@ -134,7 +158,7 @@ with app.app_context():
         booking_columns = {c["name"] for c in inspector.get_columns("bookings")}
         if "user_id" not in booking_columns:
             db.session.execute(
-                text('ALTER TABLE "bookings" ADD COLUMN user_id INTEGER REFERENCES "user"(id)')
+                text(f'ALTER TABLE {q("bookings")} ADD COLUMN user_id INTEGER REFERENCES {q("user")}(id)')
             )
             db.session.commit()
 
@@ -144,7 +168,7 @@ with app.app_context():
         purchase_columns = {c["name"] for c in inspector.get_columns("purchase")}
         if "notes" not in purchase_columns:
             db.session.execute(
-                text('ALTER TABLE "purchase" ADD COLUMN notes TEXT')
+                text(f'ALTER TABLE {q("purchase")} ADD COLUMN notes TEXT')
             )
             db.session.commit()
 
@@ -155,14 +179,15 @@ with app.app_context():
         for column_name in ("recipient_name", "phone", "address"):
             if column_name not in book_purchase_columns:
                 db.session.execute(
-                    text(f'ALTER TABLE "book_purchase" ADD COLUMN {column_name} TEXT')
+                    text(f'ALTER TABLE {q("book_purchase")} ADD COLUMN {q(column_name)} TEXT')
                 )
         db.session.commit()
 
     # Indexes on foreign-key columns speed up joins/filters as tables grow.
-    # CREATE INDEX IF NOT EXISTS is supported on both SQLite and PostgreSQL,
-    # so this is safe to run on every startup and on databases that existed
-    # before these indexes were added to the models.
+    # "CREATE INDEX IF NOT EXISTS" isn't supported by standard MySQL (only by
+    # SQLite/PostgreSQL/MariaDB), so instead we check the existing indexes via
+    # the inspector first and only create what's actually missing — this way
+    # the same code works on every backend without relying on IF NOT EXISTS.
     fk_indexes = [
         ("assignment", "course_id"),
         ("bookings", "user_id"),
@@ -183,12 +208,21 @@ with app.app_context():
         ("user", "grade_id"),
     ]
     for table_name, column_name in fk_indexes:
-        if inspector.has_table(table_name):
-            index_name = f"ix_{table_name}_{column_name}"
+        if not inspector.has_table(table_name):
+            continue
+        index_name = f"ix_{table_name}_{column_name}"
+        existing_indexes = {ix["name"] for ix in inspector.get_indexes(table_name)}
+        if index_name in existing_indexes:
+            continue
+        try:
             db.session.execute(
-                text(f'CREATE INDEX IF NOT EXISTS "{index_name}" ON "{table_name}" ("{column_name}")')
+                text(f'CREATE INDEX {q(index_name)} ON {q(table_name)} ({q(column_name)})')
             )
-    db.session.commit()
+            db.session.commit()
+        except (OperationalError, ProgrammingError):
+            # Another worker/process created it in the meantime, or the
+            # index already exists under a different name — safe to skip.
+            db.session.rollback()
 
 
 #main pages routes===================///
@@ -264,6 +298,19 @@ def booking():
          )
          db.session.add(booking)
          db.session.commit()
+
+         notify_admin(
+             subject=f"New booking: {booking.course.title if booking.course else 'a course'}",
+             lines=[
+                 f"Student: {request.form['student_name']} ({request.form['student_number']})",
+                 f"Parent: {request.form['parent_number']}",
+                 f"Grade: {request.form['grade']}",
+                 f"Mode: {mode}",
+                 f"Notes: {request.form.get('addational_notes') or '-'}",
+                 f"Review it here: {url_for('booking.admin_booking', _external=True)}",
+             ]
+         )
+
          flash("your booking has been confirmed")
          return redirect(url_for("booking"))  
     courses = Course.query.all()

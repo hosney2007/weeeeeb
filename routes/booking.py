@@ -7,6 +7,7 @@ from utils.decorators import admin_required
 from models.course import Course
 from models.booking import Booking
 from extinsion import db
+from utils.notifications import notify_student
 
 booking = Blueprint("booking" ,__name__)
 
@@ -53,6 +54,12 @@ def approve_booking(booking_id):
     booking = Booking.query.get_or_404(booking_id)
     booking.status = "approved"
     db.session.commit()
+    notify_student(
+        booking.user,
+        title="Your booking has been approved",
+        message=f"Your booking for '{booking.course.title}' has been approved. See you in class!",
+        link_endpoint="home"
+    )
     return redirect(url_for("booking.admin_booking"))
 
 #======[DELETE]====//

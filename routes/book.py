@@ -5,6 +5,7 @@ from extinsion import db
 from models.book_purchase import BookPurchase
 from utils.decorators import admin_required
 from utils.uploads import upload_course_image
+from utils.notifications import notify_admin, notify_student
 
 book = Blueprint("book", __name__)
 
@@ -71,6 +72,19 @@ def buy():
             purchase.status = "waiting"
 
             db.session.commit()
+
+            notify_admin(
+                subject=f"New book order: {BOOK['title']}",
+                lines=[
+                    f"Buyer: {current_user.name} ({current_user.email})",
+                    f"Recipient: {recipient_name}",
+                    f"Phone: {phone}",
+                    f"Address: {address}",
+                    f"Notes: {notes or '-'}",
+                    f"Review it here: {url_for('book.admin_orders', _external=True)}",
+                ]
+            )
+
             flash("Payment uploaded successfully.", "success")
             return redirect(url_for("home"))
 
@@ -103,6 +117,12 @@ def approve_order(id):
     order = BookPurchase.query.get_or_404(id)
     order.status = "approved"
     db.session.commit()
+    notify_student(
+        order.user,
+        title="Your book order has been approved",
+        message=f"Your order for '{BOOK['title']}' has been approved and is being prepared for delivery.",
+        link_endpoint="home"
+    )
     return redirect(url_for("book.admin_orders"))
 
 
@@ -113,6 +133,12 @@ def reject_order(id):
     order = BookPurchase.query.get_or_404(id)
     order.status = "rejected"
     db.session.commit()
+    notify_student(
+        order.user,
+        title="Your book order needs attention",
+        message=f"Your order for '{BOOK['title']}' couldn't be approved. Please check your payment proof and try again.",
+        link_endpoint="book.buy"
+    )
     return redirect(url_for("book.admin_orders"))
 
 
