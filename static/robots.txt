@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /courses
+Allow: /free
+Allow: /booking
+Allow: /contact
+
+Disallow: /admin
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /notifications
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
+Disallow: /forgot-password
+Disallow: /static/uploads/
+
+Sitemap: https://YOUR-DOMAIN.com/sitemap.xml
