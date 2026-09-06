@@ -6,6 +6,7 @@ def register(client, **overrides):
         "name": "Ahmed Student",
         "email": "ahmed@example.com",
         "phone": "01012345678",
+        "parent_phone": "01123456789",
         "password": "password123",
         "confirm_password": "password123",
         "grade_code": "",
@@ -26,6 +27,19 @@ class TestRegister:
             assert user.is_verified is False
             assert user.role == "student"
             assert user.phone == "01012345678"
+            assert user.parent_phone == "01123456789"
+
+    def test_register_rejects_invalid_parent_phone(self, client, app):
+        register(client, parent_phone="12345")
+
+        with app.app_context():
+            assert User.query.filter_by(email="ahmed@example.com").first() is None
+
+    def test_register_rejects_matching_phone_and_parent_phone(self, client, app):
+        register(client, parent_phone="01012345678")
+
+        with app.app_context():
+            assert User.query.filter_by(email="ahmed@example.com").first() is None
 
     def test_register_rejects_invalid_phone(self, client, app):
         register(client, phone="12345")

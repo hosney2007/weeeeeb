@@ -16,6 +16,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
+                            <th>Parent Phone</th>
                             <th>Grade</th>
                             <th>Status</th>
                         </tr>
@@ -27,6 +28,7 @@
                             <td>{{ student.name }}</td>
                             <td>{{ student.email }}</td>
                             <td>{{ student.phone or "-" }}</td>
+                            <td>{{ student.parent_phone or "-" }}</td>
                             <td>{{ student.grade.name if student.grade else "-" }}</td>
                             <td>
                                 <span class="badge badge-success">Verified</span>
@@ -34,7 +36,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="6">No verified students yet.</td>
+                            <td colspan="7">No verified students yet.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
