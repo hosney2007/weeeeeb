@@ -1,6 +1,4 @@
-/*css varibels — kept identical to style.css's palette so the two files
-  never fight over the same custom properties (admin.css loads after
-  style.css on every page, so any mismatch here would silently win) */
+
 :root{
     /*main colors*/
     --primary-color:#071426;

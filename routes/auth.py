@@ -173,7 +173,6 @@ def register():
             flash("Email already registered","danger")
             return redirect(url_for("auth.register"))
 
-        # الطالب لا يختار الـ Role أو الـ Grade بنفسه، الكود بس اللي بيحددهم
         role = "student"
         grade_id = None
         if grade_code:
@@ -369,21 +368,16 @@ def dashboard():
     if current_user.role == "school_student":
         return redirect(url_for("school.dashboard"))
 
-    # بيانات الطالب
     user = current_user
 
-    # الكورسات المسجلة (Recorded Courses)
     purchases = Purchase.query.filter_by(
         user_id=current_user.id,
         status="approved"
     ).all()
 
-    # جميع الحجوزات (Offline + Online)
-    # Bookings created while logged in are linked via user_id (older/guest
-    # bookings before this field existed will simply not show up here).
+
     bookings = Booking.query.filter_by(user_id=current_user.id).all()
 
-    # إحصائيات
     total_recorded = len(purchases)
     total_bookings = len(bookings)
 

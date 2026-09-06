@@ -5,8 +5,8 @@ class RecordedQuestion(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     question_text = db.Column(db.Text, nullable=False)
-    question_type = db.Column(db.String(20), nullable=False, default="mcq")  # mcq | text
-    options = db.Column(db.Text, nullable=True)  # options separated by "||" (mcq only)
+    question_type = db.Column(db.String(20), nullable=False, default="mcq")  
+    options = db.Column(db.Text, nullable=True)  
     correct_answer = db.Column(db.String(255), nullable=False)
     assignment_id = db.Column(db.Integer, db.ForeignKey("recorded_assignment.id"), nullable=False, index=True)
 

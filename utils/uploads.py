@@ -26,8 +26,7 @@ def upload_course_image(image, folder="courses"):
     if not image or not image.filename:
         return None
 
-    # Same extension/mimetype/"is this really an image" checks run
-    # regardless of where the file ends up (Supabase or local disk).
+
     try:
         extension = validate_image(image)
     except ValueError as e:
@@ -51,7 +50,6 @@ def upload_course_image(image, folder="courses"):
     try:
         relative = save_image(image, folder, extension=extension)
     except ValueError as e:
-        # لو الملف مش صورة صحيحة، منمنعش الادمن يكمل من غير ما نديله رسالة واضحة
         flash(str(e), "danger")
         return None
     return url_for("static", filename=f"uploads/{relative}") if relative else None

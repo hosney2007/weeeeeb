@@ -50,10 +50,7 @@ from logging.handlers import RotatingFileHandler
 app = Flask(__name__, template_folder="templates")
 app.config["TEMPLATES_AUTO_RELOAD"]=True
 
-#logging=========================================================///
-# Errors are written to logs/app.log (rotated at 1MB, keeps 5 backups) so
-# production issues can be diagnosed after the fact instead of only showing
-# up as a generic 500 page with no trace anywhere.
+
 if not app.debug:
     logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
     os.makedirs(logs_dir, exist_ok=True)
@@ -130,22 +127,16 @@ def load_user(user_id):
     
 with app.app_context():
     db.create_all()
-    # migration خفيفة: نضيف عمود grade_id لجدول الـ user لو مش موجود (لقاعدة بيانات كانت شغالة قبل التحديث)
     from sqlalchemy import inspect, text
     from sqlalchemy.exc import OperationalError, ProgrammingError
     inspector = inspect(db.engine)
 
-    # Identifiers must be quoted differently per database (SQLite/PostgreSQL use
-    # double quotes, MySQL/MariaDB use backticks). Ask SQLAlchemy's own dialect
-    # for the right quoting instead of hardcoding one style, so these
-    # migrations work unchanged whether the app runs on SQLite, Postgres, or
-    # a Hostinger MySQL database.
+
     quote = db.engine.dialect.identifier_preparer.quote
 
     def q(name):
         return quote(name)
 
-    # Lightweight schema migration for databases created before grade support.
     if inspector.has_table("user") and inspector.has_table("grade"):
         existing_columns = {c["name"] for c in inspector.get_columns("user")}
         if "grade_id" not in existing_columns:
@@ -154,8 +145,7 @@ with app.app_context():
             )
             db.session.commit()
 
-    # Add the "phone" column to user for databases created before
-    # registration started collecting a phone number.
+
     if inspector.has_table("user"):
         user_columns = {c["name"] for c in inspector.get_columns("user")}
         if "phone" not in user_columns:
@@ -164,7 +154,6 @@ with app.app_context():
             )
             db.session.commit()
 
-    # Link new bookings to logged-in student accounts without breaking old rows.
     if inspector.has_table("bookings") and inspector.has_table("user"):
         booking_columns = {c["name"] for c in inspector.get_columns("bookings")}
         if "user_id" not in booking_columns:
@@ -173,8 +162,7 @@ with app.app_context():
             )
             db.session.commit()
 
-    # Add the "notes" column to purchase for databases created before the
-    # payment page started collecting a note from the student.
+
     if inspector.has_table("purchase"):
         purchase_columns = {c["name"] for c in inspector.get_columns("purchase")}
         if "notes" not in purchase_columns:
@@ -183,8 +171,7 @@ with app.app_context():
             )
             db.session.commit()
 
-    # Add delivery fields to book_purchase for databases created before the
-    # book payment page started collecting a delivery address.
+
     if inspector.has_table("book_purchase"):
         book_purchase_columns = {c["name"] for c in inspector.get_columns("book_purchase")}
         for column_name in ("recipient_name", "phone", "address"):
@@ -194,11 +181,7 @@ with app.app_context():
                 )
         db.session.commit()
 
-    # Indexes on foreign-key columns speed up joins/filters as tables grow.
-    # "CREATE INDEX IF NOT EXISTS" isn't supported by standard MySQL (only by
-    # SQLite/PostgreSQL/MariaDB), so instead we check the existing indexes via
-    # the inspector first and only create what's actually missing — this way
-    # the same code works on every backend without relying on IF NOT EXISTS.
+
     fk_indexes = [
         ("assignment", "course_id"),
         ("bookings", "user_id"),
@@ -231,8 +214,7 @@ with app.app_context():
             )
             db.session.commit()
         except (OperationalError, ProgrammingError):
-            # Another worker/process created it in the meantime, or the
-            # index already exists under a different name — safe to skip.
+
             db.session.rollback()
 
 

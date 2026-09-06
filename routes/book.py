@@ -10,9 +10,7 @@ from utils.validators import is_valid_phone, clean_phone
 
 book = Blueprint("book", __name__)
 
-# Static book data shown on the homepage "Exclusive Book" section.
-# Not admin-managed yet — edit this dict (and the cover text in
-# templates/index.html / templates/book_payment.html) to update it.
+
 BOOK = {
     "title": "Digital SAT Math",
     "subtitle": "The Ultimate Guide to Digital SAT Math",

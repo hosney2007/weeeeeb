@@ -19,7 +19,6 @@ school = Blueprint("school", __name__, url_prefix="/school")
 
 
 def _grade_courses():
-    """كل الكورسات الخاصة بـ Grade الطالب الحالي فقط."""
     return SchoolCourse.query.filter_by(grade_id=current_user.grade_id).all()
 
 

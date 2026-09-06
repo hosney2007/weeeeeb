@@ -56,7 +56,6 @@ def validate_image(file):
     if extension not in ALLOWED_EXTENSIONS:
         raise ValueError("Invalid file extension.")
 
-    # نوع الملف
     if file.mimetype not in [
         "image/png",
         "image/jpeg",
@@ -64,7 +63,6 @@ def validate_image(file):
     ]:
         raise ValueError("Invalid image type.")
 
-    # التأكد إنها صورة
     try:
         img = Image.open(file)
         img.verify()
@@ -86,7 +84,6 @@ def save_image(file, folder, extension=None):
         if extension is None:
             return None
 
-    # اسم عشوائي
     filename = f"{uuid.uuid4()}.{extension}"
 
     save_path = os.path.join(

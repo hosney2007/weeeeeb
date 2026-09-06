@@ -8,7 +8,6 @@ class Notification(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
     title = db.Column(db.String(150), nullable=False)
     message = db.Column(db.String(500), nullable=True)
-    # رابط اختياري تودي عليه المستخدم لما يدوس على الإشعار (نتيجة كورس، صفحة حجز...إلخ)
     link = db.Column(db.String(255), nullable=True)
     is_read = db.Column(db.Boolean, default=False, index=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

@@ -11,15 +11,10 @@ class Config:
         )
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads" )
-    # Reject request bodies over 10MB (protects against disk-filling / bandwidth abuse
-    # via unbounded file uploads on payment images, sheets, thumbnails, etc.)
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///database.db")
-    # Some providers still expose the legacy postgres:// scheme.
     if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
         SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://" + SQLALCHEMY_DATABASE_URI[len("postgres://"):]
-    # Hostinger (and most hosts) give a plain mysql:// URL; SQLAlchemy needs a
-    # driver name in the scheme, so default it to PyMySQL if none was given.
     if SQLALCHEMY_DATABASE_URI.startswith("mysql://"):
         SQLALCHEMY_DATABASE_URI = "mysql+pymysql://" + SQLALCHEMY_DATABASE_URI[len("mysql://"):]
     if SQLALCHEMY_DATABASE_URI.startswith("sqlite"):
@@ -34,15 +29,10 @@ class Config:
     MAIL_PORT = int(os.getenv("MAIL_PORT", "587"))
     MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", "true").lower() == "true"
     MAIL_USE_SSL = os.getenv("MAIL_USE_SSL", "false").lower() == "true"
-    MAIL_USERNAME = ("ma0332897@gmail.com")
-    MAIL_PASSWORD= ("qqcyupvnevpxyusj")
-    MAIL_DEFAULT_SENDER= "ma0332897@gmail.com"
-    # Where "new order" emails go (course/book purchases, new bookings).
-    # Defaults to the same inbox used to send mail if not set separately.
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", MAIL_USERNAME)
     ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", MAIL_USERNAME)
 
-    # Payment details shown on the recorded-course payment page. Set these
-    # via env vars for the real account details before deploying — the
-    # fallback values below are placeholders only.
     VODAFONE_CASH_NUMBER = os.getenv("VODAFONE_CASH_NUMBER", "01012345678")
     INSTAPAY_ID = os.getenv("INSTAPAY_ID", "mohamedhosney@instapay")

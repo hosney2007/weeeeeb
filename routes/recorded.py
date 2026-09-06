@@ -447,16 +447,13 @@ def buy_course(id):
 @recorded.route("/courses/recorded/<int:id>/payment", methods=["GET", "POST"])
 @login_required
 def payment(id):
-    # الكورس
     recorded = Recorded.query.get_or_404(id)
 
-    # عملية الشراء الخاصة بالمستخدم
     purchase = Purchase.query.filter_by(
         user_id=current_user.id,
         recorded_course_id=id
     ).first()
     
-    # رفع الصورة
     if request.method == "POST":
 
         image = request.files.get("payment_image")
