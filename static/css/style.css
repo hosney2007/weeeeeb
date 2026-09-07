@@ -372,12 +372,7 @@ hr{
     background: var(--gray);
     margin: 60px 0 30px;
 }
-.h hr{
-    border: none;
-    height: 1px;
-    background: var(--gray);
-    margin: 30px 30px;
-}
+
 /*=================================hero section==========================*/
 
 .hero{

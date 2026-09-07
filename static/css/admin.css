@@ -506,6 +506,12 @@ textarea.form-control{
     justify-content: space-between;
     margin: auto;
 }
+.h hr{
+    border: none;
+    height: 1px;
+    background: var(--gray);
+    margin: 30px 30px;
+}
 .course-lessons{
     color: var(--primary-color);
     font-size: 15px;
