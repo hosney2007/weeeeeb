@@ -479,8 +479,8 @@ textarea.form-control{
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--gray);
-    font-size: 13px;
+    color: var(--primary-color);
+    font-size: 18px;
     margin: 0;
 }
 .course-detail-empty{
@@ -492,8 +492,8 @@ textarea.form-control{
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #D4AF37;
-    color: #111;
+    background: var(--primary-color);
+    color: var(--secondary-color);
     padding: 8px 18px;
     border-radius: 30px;
     font-size: 22px;
@@ -503,8 +503,8 @@ textarea.form-control{
 }
 .recorded-actions{
     display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    justify-content: space-between;
+    margin: auto;
 }
 .course-lessons{
     color: var(--primary-color);

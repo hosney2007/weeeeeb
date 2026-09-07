@@ -28,13 +28,14 @@
                         <span class="course-tag course-tag-level"><i class="fa-solid fa-infinity"></i> Lifetime Access</span>
                     </div>
 
+                   {% set purchase = purchases.get(recorded.id)%}
+                </div>
+                <hr class="hh">
+                <div class="recorded-actions">
                    <span class="price-tag">
                     <i class="fa-solid fa-tag"></i>
                      {{"{:,.0f}".format(recorded.price or 0) }} EGP
                   </span>
-                   {% set purchase = purchases.get(recorded.id)%}
-                </div>
-                <div class="recorded-actions">
                     {%if not purchase %}
                     <a href="{{ url_for('recorded.payment', id=recorded.id)}}" class="btn"> Buy</a>
                     {%elif purchase.status == "pending" %}
