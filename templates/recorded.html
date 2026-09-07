@@ -22,9 +22,12 @@
                 </div>
                 <div class="recorded-content">
                     <h3>{{recorded.title}}</h3>
-                    <p class="p1"> {{recorded.description}}</p>
-                    <p class="course-lessons"><i class="fa-solid fa-video"></i> {{recorded.lessons|length}} Lessons</p>
-                    <hr>
+
+                    <div class="course-detail-tags">
+                        <span class="course-tag course-tag-online"><i class="fa-solid fa-video"></i> {{recorded.lessons|length}} Lessons</span>
+                        <span class="course-tag course-tag-level"><i class="fa-solid fa-infinity"></i> Lifetime Access</span>
+                    </div>
+
                    <span class="price-tag">
                     <i class="fa-solid fa-tag"></i>
                      {{"{:,.0f}".format(recorded.price or 0) }} EGP

@@ -22,7 +22,29 @@
                 </div>
                 <div class="recorded-content" >
                     <h3>{{course.title}}</h3>
-                    <p> {{course.description}}</p>
+
+                    {% set groups = course_details.get(course.id) %}
+                    {% if groups %}
+                    <div class="course-group-list">
+                        {% for g in groups %}
+                        <div class="course-group-row">
+                            <div class="course-detail-tags">
+                                {% if g.level %}
+                                <span class="course-tag course-tag-level">{{ g.level|capitalize }}</span>
+                                {% endif %}
+                                <span class="course-tag course-tag-online"><i class="fa-solid fa-video"></i> Online</span>
+                            </div>
+                            <p class="course-group-time">
+                                <i class="fa-solid fa-clock"></i>
+                                {{ g.day1 }} {{ g.time1 }} &amp; {{ g.day2 }} {{ g.time2 }}
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="course-detail-empty">No groups scheduled yet - check back soon.</p>
+                    {% endif %}
+
                     <a href="/booking" class="btn btn-admin"> Book course</a>
                 </div>
                 <div class="recorded-actions">

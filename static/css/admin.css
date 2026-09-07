@@ -436,7 +436,7 @@ textarea.form-control{
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
 }
 .course-tag{
     display: inline-flex;
@@ -456,6 +456,33 @@ textarea.form-control{
     color: var(--secondary-color);
     border: 1px solid var(--secondary-color);
 }
+.course-tag-online{
+    background: rgba(46,204,113,.12);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+.course-group-list{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+.course-group-row{
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+}
+.course-group-row:last-child{
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.course-group-time{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray);
+    font-size: 13px;
+    margin: 0;
+}
 .course-detail-empty{
     color: var(--gray);
     font-size: 14px;
@@ -471,6 +498,8 @@ textarea.form-control{
     border-radius: 30px;
     font-size: 22px;
     font-weight: bold;
+    margin-top: 6px;
+    margin-bottom: 16px;
 }
 .recorded-actions{
     display: flex;
