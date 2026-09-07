@@ -22,7 +22,21 @@
                 </div>
                 <div class="recorded-content">
                     <h3>{{course.title}}</h3>
-                    <p> {{course.description}}</p>
+
+                    {% set details = course_details.get(course.id) %}
+                    {% if details and (details.levels or details.branches) %}
+                    <div class="course-detail-tags">
+                        {% for level in details.levels %}
+                        <span class="course-tag course-tag-level">{{ level|capitalize }}</span>
+                        {% endfor %}
+                        {% for branch in details.branches %}
+                        <span class="course-tag course-tag-branch"><i class="fa-solid fa-location-dot"></i> {{ branch }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="course-detail-empty">No groups scheduled yet - check back soon.</p>
+                    {% endif %}
+
                     <a href="/booking" class="btn btn-admin"> Book course</a>
                 </div>
                 <div class="recorded-actions">
