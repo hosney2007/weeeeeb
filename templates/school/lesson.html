@@ -13,18 +13,13 @@
         <div class="profile-card">
             <div class="profile-info">
                 <p>{{ lesson.description }}</p>
-
+                <p>
+                    <a href="{{ lesson.video_url }}" target="_blank" class="btn">
+                        <i class="fa-solid fa-play"></i> Watch Video
+                    </a>
+                </p>
             </div>
         </div>
-                <div class="video-player">
-                   <iframe
-                   src="{{ lesson.video_url }}"
-                   frameborder="0"
-                   allow="autoplay; fullscreen; picture-in-picture"
-                   allowfullscreen>
-                   </iframe>
-                </div>
-            
     </section>
 
 </div>
