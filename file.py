@@ -226,7 +226,7 @@ def home():
         is_active=True
     ).order_by(
         SuccessStory.id.desc()
-    ).limit(6).all()
+    ).all()
 
     book_purchase = None
     if current_user.is_authenticated:
