@@ -33,8 +33,8 @@ def get_schedules():
                "id": schedule.id,
 
                "text" : f"{schedule.level} | "
-                       f"{schedule.day1} {schedule.time1} - "
-                       f"{schedule.day2} {schedule.time2} "
+                       f"{schedule.day1} {schedule.time1}"
+                       + (f" - {schedule.day2} {schedule.time2}" if schedule.day2 and schedule.time2 else "")
              })
      return jsonify(data)
 

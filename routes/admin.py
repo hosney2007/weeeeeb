@@ -204,12 +204,16 @@ def add_group():
 
         course_id = request.form.get("course_id")
         level = request.form.get("level")
+        grade = request.form.get("grade")
         mode = request.form.get("mode")
         branch_id = request.form.get("branch_id")
         day1 = request.form.get("day1")
         time1 = request.form.get("time1")
-        day2 = request.form.get("day2")
-        time2 = request.form.get("time2")
+        day2 = (request.form.get("day2") or "").strip()
+        time2 = (request.form.get("time2") or "").strip()
+        if bool(day2) != bool(time2):
+            flash("Please choose both the second day and its time, or leave both empty.", "danger")
+            return redirect(url_for("admin.add_group"))
         if mode == "online":
             branch_id = None
         
@@ -217,6 +221,7 @@ def add_group():
         schedule = Schedule(
             course_id=course_id,
             level=level,
+            grade=grade,
             mode=mode,
             branch_id=branch_id,
             day1=day1,

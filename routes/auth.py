@@ -61,7 +61,14 @@ If you did not create this account, simply ignore this email.
 Regards,
 Abdelfatah Academy
 """
-    mail.send(msg)
+    try:
+        mail.send(msg)
+        return True
+    except Exception as e:
+        current_app.logger.error(
+            f"Failed to send verification email to {user.email}: {e}"
+        )
+        return False
 
 #reset passwoed verify============///
 def generate_reset_token(email):
@@ -195,7 +202,19 @@ def register():
         )
         db.session.add(user)
         db.session.commit()
-        send_verification_email(user)
+
+        email_sent = send_verification_email(user)
+
+        if not email_sent:
+            db.session.delete(user)
+            db.session.commit()
+            flash(
+                "We couldn't send a verification email to that address. "
+                "Please double-check your email and try registering again.",
+                "danger"
+            )
+            return redirect(url_for("auth.register"))
+
         flash( "Account created successfully! Please check your email to verify your account.","success")
         return redirect(url_for("auth.login"))
     return render_template("register.html", name="Register")

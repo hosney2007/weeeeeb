@@ -36,6 +36,17 @@
         </div>
 
 
+        <!-- Grade -->
+        <div class="mb-3">
+            <label>Grade</label>
+            <select name="grade" class="form-control" required>
+                <option value="">Choose Grade</option>
+                <option value="10">Grade 10</option>
+                <option value="11">Grade 11</option>
+                <option value="12">Grade 12</option>
+            </select>
+        </div>
+
         <!-- Mode -->
         <div class="mb-3">
             <label>Mode</label>
@@ -106,11 +117,11 @@
         <!-- Day-2 -->
         <div class="mb-3">
 
-            <label>Day-2</label>
+            <label>Day-2 (optional)</label>
 
-            <select name="day2" class="form-control" required>
+            <select name="day2" class="form-control">
 
-                <option value="">Choose Day</option>
+                <option value="">No second day</option>
                 <option value="Saturday">Saturday</option>
                 <option value="Sunday">Sunday</option>
                 <option value="Monday">Monday</option>
@@ -127,13 +138,12 @@
         <!-- Time -->
         <div class="mb-3">
 
-            <label>Time2</label>
+            <label>Time-2 (optional)</label>
 
             <input
                 type="time"
                 name="time2"
                 class="form-control"
-                required
             >
 
         </div>

@@ -163,6 +163,18 @@ with app.app_context():
             db.session.commit()
 
 
+    if inspector.has_table("schedule"):
+        schedule_columns = {c["name"] for c in inspector.get_columns("schedule")}
+        if "grade" not in schedule_columns:
+            db.session.execute(
+                text(f'ALTER TABLE {q("schedule")} ADD COLUMN {q("grade")} VARCHAR(10)')
+            )
+        if "capacity" not in schedule_columns:
+            db.session.execute(
+                text(f'ALTER TABLE {q("schedule")} ADD COLUMN {q("capacity")} INTEGER')
+            )
+        db.session.commit()
+
     if inspector.has_table("purchase"):
         purchase_columns = {c["name"] for c in inspector.get_columns("purchase")}
         if "notes" not in purchase_columns:
@@ -220,13 +232,24 @@ with app.app_context():
 
 #main pages routes===================///
 
+
+def open_groups_for_grade(grade):
+    """Active groups of a grade (no seat limit)."""
+    result = []
+    for g in Schedule.query.filter(Schedule.grade == grade).all():
+        if g.course and not g.course.is_active:
+            continue
+        result.append({"group": g})
+    return result
+
+
 @app.route('/')
 def home():
     stories = SuccessStory.query.filter_by(
         is_active=True
     ).order_by(
         SuccessStory.id.desc()
-    ).all()
+    ).limit(6).all()
 
     book_purchase = None
     if current_user.is_authenticated:
@@ -239,7 +262,8 @@ def home():
         name = 'Home',
         stories=stories,
         book=BOOK,
-        book_purchase=book_purchase
+        book_purchase=book_purchase,
+        grade10_open=open_groups_for_grade("10")
     )
 
 @app.route("/about")
@@ -314,7 +338,7 @@ def booking():
              ]
          )
 
-         flash("your booking has been confirmed")
+         flash("Your booking has been received. We will contact you as soon as possible.", "success")
          return redirect(url_for("booking"))  
     courses = Course.query.all()
     branches = Branch.query.all()
@@ -338,7 +362,7 @@ def contact():
          )
          db.session.add(message)
          db.session.commit()
-         flash("your message has been confirmed")
+         flash("Your message has been sent successfully.", "success")
          return redirect(url_for("contact"))  
     return render_template('contact.html', name = 'contact')    
 

@@ -5,6 +5,7 @@
 
 {% block body %}
 <!--hero section-->
+
 <section class="hero" data-aos="">
     <div class="hero_content">
         <span class="tag">American Diploma Mathematics</span>
@@ -29,6 +30,20 @@
     </div>
 
 </section>
+
+{% if grade10_open %}
+<!--grade 10 open booking banner-->
+<section class="open-booking-banner" data-aos="fade-up">
+    <div class="open-booking-head">
+        <span class="open-badge">Booking is open</span>
+        <h3>Grade 10 booking is now open at all centers</h3>
+        <p>Book now before the seats run out!</p>
+    </div>
+    <a href="/booking" class="btn">Book your seat now</a>
+</section>
+{% endif %}
+
+
 
 <!--===============================================================================-->
 

@@ -29,7 +29,7 @@
                          <tr>
                           <td>{{ schedule.course.title }}</td>
                           <td>{{ schedule.branch.name }}</td>
-                          <td>{{schedule.day1}}-{{schedule.day2}}</td>
+                          <td>{{schedule.day1}}{% if schedule.day2 %}-{{schedule.day2}}{% endif %}</td>
                             <td>
                                 <div class="table-action">
                                      <form method="post" action="{{ url_for('schedule.delete_schedule', schedule_id=schedule.id)}}" style="display:inline;" onsubmit="return confirm('Delete this group?');">

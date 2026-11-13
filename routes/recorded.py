@@ -66,7 +66,7 @@ def add_course():
         )  
         db.session.add(new_recorded)
         db.session.commit()
-        flash("recorded course added successfuly ")
+        flash("Recorded course added successfully.", "success")
         return redirect(url_for("recorded.recorded_courses"))
     return render_template("admin/add-recorded.html" , name="add Course") 
 
@@ -92,7 +92,7 @@ def edit_course( id ):
         recorded.description = request.form.get("description")
         recorded.price = price
         db.session.commit()
-        flash("recorded course updated successfully")
+        flash("Recorded course updated successfully.", "success")
         return redirect(url_for("recorded.recorded_courses"))
     return render_template("admin/edit-recorded.html", recorded=recorded, name="Edit Course") 
 
@@ -199,7 +199,7 @@ def edit_lesson( id ):
         lesson.lesson_order = lesson_order
 
         db.session.commit()
-        flash("recorded course updated successfully")
+        flash("Recorded course updated successfully.", "success")
         return redirect(url_for("recorded.lessons", id=lesson.recorded_course_id))
     return render_template("admin/edit-lesson.html", lesson=lesson, name="Edit lesson") 
 

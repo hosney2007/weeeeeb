@@ -36,7 +36,7 @@
                             </div>
                             <p class="course-group-time">
                                 <i class="fa-solid fa-clock"></i>
-                                {{ g.day1 }} {{ g.time1 }} &amp; {{ g.day2 }} {{ g.time2 }}
+                                {{ g.day1 }} {{ g.time1 }}{% if g.day2 and g.time2 %} &amp; {{ g.day2 }} {{ g.time2 }}{% endif %}
                             </p>
                         </div>
                         {% endfor %}
