@@ -2,46 +2,105 @@
 
 {% block body %}
 
-<div style="max-width:700px; margin:0 auto; padding: 20px 16px; padding-top: 130px; ">
+<div class="qz-page">
 
-    <h2 style="text-align:center; margin-bottom:6px;">{{ assignment.title }}</h2>
-    <p style="text-align:center; color:var(--gray); margin-bottom:24px;">{{ assignment.description }}</p>
+    <header class="qz-header">
+        <div>
+            <span class="qz-chip"><i class="fa-solid fa-pen-to-square"></i> Assignment</span>
+            <h1 dir="auto">{{ assignment.title }}</h1>
+            {% if assignment.description %}<p dir="auto">{{ assignment.description }}</p>{% endif %}
+        </div>
+        {% if assignment.questions %}
+        <div class="qz-meta">
+            <span><i class="fa-regular fa-circle-question"></i> {{ assignment.questions|length }} questions</span>
+            <span><i class="fa-regular fa-clock"></i> <b id="qz-timer">00:00</b></span>
+        </div>
+        {% endif %}
+    </header>
 
     {% if assignment.questions %}
 
-    <div class="assignment-progress">
-        <span id="progress-label">Answered 0 of {{ assignment.questions|length }}</span>
-        <div class="assignment-progress-track">
+    <div class="qz-progress">
+        <div class="qz-progress-top">
+            <span id="progress-label">Answered 0 of {{ assignment.questions|length }}</span>
+            <span id="qz-pct">0%</span>
+        </div>
+        <div class="assignment-progress-track qz-track">
             <div class="assignment-progress-fill" id="progress-fill" style="width:0%;"></div>
         </div>
     </div>
 
-    <form method="post" action="{{ url_for('school.submit_assignment', id=assignment.id) }}" id="assignment-form">
+    <form method="post" action="{{ url_for('school.submit_assignment', id=assignment.id) }}" id="assignment-form" novalidate>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        {% for question in assignment.questions %}
-        <div class="question-card">
-            <div class="question-head">
-                <span class="question-number">{{ loop.index }}</span>
-                <p class="question-text">{{ question.question_text }}</p>
+        <div class="qz-layout">
+
+            <div class="qz-main">
+                {% for question in assignment.questions %}
+                <section class="qz-q" data-index="{{ loop.index0 }}" {% if not loop.first %}hidden{% endif %}>
+                    <div class="qz-q-top">
+                        <span class="qz-q-num">Question {{ loop.index }} of {{ assignment.questions|length }}</span>
+                        <button type="button" class="qz-flag" aria-pressed="false">
+                            <i class="fa-regular fa-flag"></i> Flag
+                        </button>
+                    </div>
+
+                    <p class="qz-q-text" dir="auto">{{ question.question_text }}</p>
+
+                    {% if question.question_type == "mcq" %}
+                    <div class="qz-options">
+                        {% for option in question.options_list() %}
+                        <label class="qz-option">
+                            <input type="radio" name="question_{{ question.id }}" value="{{ option }}">
+                            <span class="qz-key">{{ 'ABCDEF'[loop.index0] }}</span>
+                            <span class="qz-opt-text" dir="auto">{{ option }}</span>
+                            <i class="fa-solid fa-circle-check qz-tick"></i>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <input type="text" name="question_{{ question.id }}" class="qz-input" dir="auto"
+                           autocomplete="off" placeholder="Type your answer here...">
+                    {% endif %}
+                </section>
+                {% endfor %}
+
+                <div class="qz-nav">
+                    <button type="button" id="qz-prev" class="qz-btn ghost"><i class="fa-solid fa-arrow-left"></i> Previous</button>
+                    <button type="button" id="qz-next" class="qz-btn">Next <i class="fa-solid fa-arrow-right"></i></button>
+                    <button type="button" id="qz-finish" class="qz-btn primary" hidden>
+                        <i class="fa-solid fa-paper-plane"></i> Review &amp; submit
+                    </button>
+                </div>
             </div>
 
-            {% if question.question_type == "mcq" %}
-                <div class="question-options">
-                    {% for option in question.options_list() %}
-                    <label class="option-row">
-                        <input type="radio" name="question_{{ question.id }}" value="{{ option }}" required>
-                        <span>{{ option }}</span>
-                    </label>
+            <aside class="qz-side">
+                <h4>Questions</h4>
+                <div class="qz-grid" id="qz-grid">
+                    {% for question in assignment.questions %}
+                    <button type="button" class="qz-dot" data-goto="{{ loop.index0 }}">{{ loop.index }}</button>
                     {% endfor %}
                 </div>
-            {% else %}
-                <input type="text" name="question_{{ question.id }}" class="question-text-answer" placeholder="Your answer" required>
-            {% endif %}
-        </div>
-        {% endfor %}
+                <div class="qz-legend">
+                    <span><i class="qz-key-dot answered"></i> Answered</span>
+                    <span><i class="qz-key-dot flagged"></i> Flagged</span>
+                    <span><i class="qz-key-dot"></i> Not answered</span>
+                </div>
+                <button type="button" id="qz-finish-side" class="qz-btn primary qz-side-submit">Submit</button>
+            </aside>
 
-        <button type="submit" class="assignment-submit-btn">Submit assignment</button>
+        </div>
+
+        <div class="qz-modal" id="qz-modal" hidden>
+            <div class="qz-modal-card">
+                <h3>Submit assignment?</h3>
+                <p id="qz-modal-text"></p>
+                <div class="qz-modal-actions">
+                    <button type="button" id="qz-cancel" class="qz-btn ghost">Keep working</button>
+                    <button type="submit" class="qz-btn primary" id="qz-submit">Submit now</button>
+                </div>
+            </div>
+        </div>
     </form>
 
     {% else %}
@@ -55,39 +114,132 @@ document.addEventListener("DOMContentLoaded", function () {
     var form = document.getElementById("assignment-form");
     if (!form) return;
 
-    var total = {{ assignment.questions|length if assignment.questions else 0 }};
-    var progressFill = document.getElementById("progress-fill");
-    var progressLabel = document.getElementById("progress-label");
+    var sections = Array.prototype.slice.call(form.querySelectorAll(".qz-q"));
+    var dots = Array.prototype.slice.call(form.querySelectorAll(".qz-dot"));
+    var total = sections.length;
+    var current = 0, submitted = false;
+    var flagged = {};
 
-    function updateProgress() {
-        var answeredNames = new Set();
+    var prevBtn = document.getElementById("qz-prev");
+    var nextBtn = document.getElementById("qz-next");
+    var finishBtn = document.getElementById("qz-finish");
+    var finishSide = document.getElementById("qz-finish-side");
+    var fill = document.getElementById("progress-fill");
+    var label = document.getElementById("progress-label");
+    var pct = document.getElementById("qz-pct");
+    var modal = document.getElementById("qz-modal");
+    var modalText = document.getElementById("qz-modal-text");
 
-        form.querySelectorAll('input[type="radio"]:checked').forEach(function (el) {
-            answeredNames.add(el.name);
-        });
-        form.querySelectorAll('input[type="text"]').forEach(function (el) {
-            if (el.value.trim() !== "") answeredNames.add(el.name);
-        });
-
-        var answered = answeredNames.size;
-        progressLabel.textContent = "Answered " + answered + " of " + total;
-        progressFill.style.width = (total ? (answered / total) * 100 : 0) + "%";
+    function isAnswered(section) {
+        if (section.querySelector('input[type="radio"]:checked')) return true;
+        var t = section.querySelector('input[type="text"]');
+        return !!(t && t.value.trim() !== "");
     }
 
-    // نحدث الشريط لما الطالب يختار إجابة أو يكتب في سؤال نصي
-    form.addEventListener("change", updateProgress);
-    form.addEventListener("input", updateProgress);
-
-    // نلوّن الاختيار المحدد بصريًا (بيضاف/بيتشال من غير ما نلمس أي منطق تصحيح موجود)
-    form.querySelectorAll(".option-row").forEach(function (row) {
-        var radio = row.querySelector('input[type="radio"]');
-        radio.addEventListener("change", function () {
-            var name = radio.name;
-            form.querySelectorAll('.option-row input[name="' + name + '"]').forEach(function (r) {
-                r.closest(".option-row").classList.toggle("selected", r.checked);
+    function refresh() {
+        var answered = 0;
+        sections.forEach(function (s, i) {
+            var a = isAnswered(s);
+            if (a) answered++;
+            dots[i].classList.toggle("answered", a);
+            dots[i].classList.toggle("flagged", !!flagged[i]);
+            dots[i].classList.toggle("current", i === current);
+            s.querySelectorAll(".qz-option").forEach(function (o) {
+                o.classList.toggle("selected", o.querySelector("input").checked);
             });
         });
+        var p = total ? Math.round((answered / total) * 100) : 0;
+        label.textContent = "Answered " + answered + " of " + total;
+        pct.textContent = p + "%";
+        fill.style.width = p + "%";
+        return answered;
+    }
+
+    function show(i) {
+        current = Math.max(0, Math.min(total - 1, i));
+        sections.forEach(function (s, idx) { s.hidden = idx !== current; });
+        prevBtn.disabled = current === 0;
+        var last = current === total - 1;
+        nextBtn.hidden = last;
+        finishBtn.hidden = !last;
+        var flagBtn = sections[current].querySelector(".qz-flag");
+        flagBtn.classList.toggle("on", !!flagged[current]);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        refresh();
+        var first = sections[current].querySelector("input[type=text]");
+        if (first) first.focus({ preventScroll: true });
+    }
+
+    function openModal() {
+        var answered = refresh();
+        var left = total - answered;
+        var flaggedCount = Object.keys(flagged).filter(function (k) { return flagged[k]; }).length;
+        var msg = "You answered " + answered + " of " + total + " questions.";
+        if (left) msg += " " + left + " unanswered " + (left === 1 ? "question" : "questions") + " will be marked wrong.";
+        if (flaggedCount) msg += " You still have " + flaggedCount + " flagged.";
+        msg += " You can only submit once.";
+        modalText.textContent = msg;
+        modal.hidden = false;
+    }
+
+    prevBtn.addEventListener("click", function () { show(current - 1); });
+    nextBtn.addEventListener("click", function () { show(current + 1); });
+    finishBtn.addEventListener("click", openModal);
+    finishSide.addEventListener("click", openModal);
+    document.getElementById("qz-cancel").addEventListener("click", function () { modal.hidden = true; });
+    modal.addEventListener("click", function (e) { if (e.target === modal) modal.hidden = true; });
+
+    dots.forEach(function (d) {
+        d.addEventListener("click", function () { show(parseInt(d.dataset.goto, 10)); });
     });
+
+    sections.forEach(function (s, i) {
+        s.querySelector(".qz-flag").addEventListener("click", function () {
+            flagged[i] = !flagged[i];
+            this.classList.toggle("on", flagged[i]);
+            this.setAttribute("aria-pressed", flagged[i] ? "true" : "false");
+            refresh();
+        });
+    });
+
+    form.addEventListener("change", refresh);
+    form.addEventListener("input", refresh);
+
+    // Enter inside a text answer moves on instead of submitting the form.
+    form.addEventListener("keydown", function (e) {
+        var inText = e.target.matches && e.target.matches("input[type=text]");
+        if (e.key === "Enter" && inText) {
+            e.preventDefault();
+            if (current < total - 1) show(current + 1); else openModal();
+            return;
+        }
+        if (inText || !modal.hidden) return;
+        if (e.key === "ArrowRight") show(current + 1);
+        else if (e.key === "ArrowLeft") show(current - 1);
+        else {
+            var idx = "abcdef".indexOf(e.key.toLowerCase());
+            var opts = sections[current].querySelectorAll(".qz-option input");
+            if (e.key.length === 1 && idx > -1 && opts[idx]) { opts[idx].checked = true; refresh(); }
+        }
+    });
+
+    // Timer (display only)
+    var started = Date.now(), timer = document.getElementById("qz-timer");
+    setInterval(function () {
+        var s = Math.floor((Date.now() - started) / 1000);
+        var m = Math.floor(s / 60), r = s % 60;
+        timer.textContent = (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r;
+    }, 1000);
+
+    form.addEventListener("submit", function () {
+        submitted = true;
+        document.getElementById("qz-submit").disabled = true;
+    });
+    window.addEventListener("beforeunload", function (e) {
+        if (!submitted && refresh() > 0) { e.preventDefault(); e.returnValue = ""; }
+    });
+
+    show(0);
 });
 </script>
 

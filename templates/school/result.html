@@ -2,6 +2,14 @@
 
 {% block body %}
 
+{% set correct = submission.answers|selectattr('is_correct')|list|length %}
+{% set pct = (submission.score or 0)|float %}
+{% set circ = 339.29 %}
+{% if pct >= 85 %}{% set tier = 'good' %}{% set msg = 'Excellent work!' %}
+{% elif pct >= 70 %}{% set tier = 'good' %}{% set msg = 'Great job!' %}
+{% elif pct >= 50 %}{% set tier = 'mid' %}{% set msg = 'Good effort. Review your mistakes.' %}
+{% else %}{% set tier = 'low' %}{% set msg = 'Keep practicing. Review the answers below.' %}{% endif %}
+
 <div class="dashboard-container">
 
     <section class="dashboard-section">
@@ -10,29 +18,28 @@
             <a href="{{ url_for('school.assignments') }}" class="btn">Back to Assignments</a>
         </div>
 
-        <div class="statistic">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-percent"></i></div>
-                <h2>{{ submission.score }}%</h2>
-                <p>Score</p>
+        <div class="rs-hero {{ tier }}">
+            <div class="rs-ring">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="rs-ring-bg" cx="60" cy="60" r="54"></circle>
+                    <circle class="rs-ring-fg" cx="60" cy="60" r="54"
+                            stroke-dasharray="{{ circ }}"
+                            stroke-dashoffset="{{ (circ * (1 - pct / 100))|round(2) }}"></circle>
+                </svg>
+                <div class="rs-ring-text">
+                    <strong>{{ pct|round|int }}%</strong>
+                    <span>Score</span>
+                </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
-                <h2>{{ submission.total }}</h2>
-                <p>Total Questions</p>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-check"></i></div>
-                <h2>{{ submission.answers|selectattr('is_correct')|list|length }}</h2>
-                <p>Correct</p>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-xmark"></i></div>
-                <h2>{{ submission.total - (submission.answers|selectattr('is_correct')|list|length) }}</h2>
-                <p>Wrong</p>
+            <div class="rs-info">
+                <h3>{{ msg }}</h3>
+                <p>You answered <b>{{ correct }}</b> out of <b>{{ submission.total }}</b> questions correctly.</p>
+                <div class="rs-pills">
+                    <span class="rs-pill ok"><i class="fa-solid fa-check"></i> {{ correct }} correct</span>
+                    <span class="rs-pill bad"><i class="fa-solid fa-xmark"></i> {{ submission.total - correct }} wrong</span>
+                    <span class="rs-pill"><i class="fa-solid fa-list-check"></i> {{ submission.total }} total</span>
+                </div>
             </div>
         </div>
 

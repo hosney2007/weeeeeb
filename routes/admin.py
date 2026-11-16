@@ -205,6 +205,7 @@ def add_group():
         course_id = request.form.get("course_id")
         level = request.form.get("level")
         grade = request.form.get("grade")
+        start_date = (request.form.get("start_date") or "").strip() or None
         mode = request.form.get("mode")
         branch_id = request.form.get("branch_id")
         day1 = request.form.get("day1")
@@ -222,6 +223,7 @@ def add_group():
             course_id=course_id,
             level=level,
             grade=grade,
+            start_date=start_date,
             mode=mode,
             branch_id=branch_id,
             day1=day1,

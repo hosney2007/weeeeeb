@@ -40,7 +40,11 @@
                         <tr>
                             <td>{{ grade.name }}</td>
                             <td>{{ grade.code }}</td>
-                            <td>{{ grade.students|length }}</td>
+                            <td>
+                                <a href="{{ url_for('school_admin.grade_students', id=grade.id) }}" class="btn btn-sm">
+                                    <i class="fa-solid fa-users"></i> View ({{ grade.students|length }})
+                                </a>
+                            </td>
                             <td>{{ grade.courses|length }}</td>
                             <td>
                                 <div class="table-action">

@@ -53,3 +53,4 @@ typing_extensions==4.16.0
 websockets==15.0.1
 wrapt==2.4.0
 yarl==1.24.5
+dnspython==2.7.0

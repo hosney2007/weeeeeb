@@ -3,6 +3,7 @@ from flask import Blueprint, render_template,redirect,url_for,flash
 from flask_login import login_required
 from utils.decorators import admin_required
 from models.schedaule import Schedule
+from models.booking import Booking
 from extinsion import db
 
 schedule = Blueprint("schedule", __name__)
@@ -13,6 +14,20 @@ schedule = Blueprint("schedule", __name__)
 def show_schedule():
     schedules = Schedule.query.all()
     return render_template("admin/schedules.html" , schedule=schedules, name="Groups")
+
+#======= STUDENTS OF A GROUP ===///
+@schedule.route("/admin/schedule/<int:schedule_id>/students")
+@login_required
+@admin_required
+def group_students(schedule_id):
+    group = Schedule.query.get_or_404(schedule_id)
+    bookings = Booking.query.filter_by(schedule_id=schedule_id).order_by(Booking.id.asc()).all()
+    return render_template(
+        "admin/group_students.html",
+        group=group,
+        bookings=bookings,
+        name="Group Students"
+    )
 
 #=====DELTE GROUPS=======//
 @schedule.route("/admin/schedule/<int:schedule_id>/delete", methods=["POST"])

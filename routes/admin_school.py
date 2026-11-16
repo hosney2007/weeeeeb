@@ -72,6 +72,20 @@ def students():
     return render_template("admin/school/students.html", name="Students", students=students)
 
 
+@school_admin.route("/grades/<int:id>/students")
+@login_required
+@admin_required
+def grade_students(id):
+    grade = Grade.query.get_or_404(id)
+    students = User.query.filter_by(role="school_student", grade_id=grade.id).order_by(User.name.asc()).all()
+    return render_template(
+        "admin/school/students.html",
+        name=f"{grade.name} - Students",
+        students=students,
+        grade=grade
+    )
+
+
 #======COURSES=====///
 @school_admin.route("/courses", methods=["GET", "POST"])
 @login_required

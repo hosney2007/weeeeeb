@@ -37,7 +37,7 @@
     <div class="open-booking-head">
         <span class="open-badge">Booking is open</span>
         <h3>Grade 10 booking is now open at all centers</h3>
-        <p>Book now before the seats run out!</p>
+        <p>{% if grade10_start %}The Grade 10 course starts on {{ grade10_start }}. {% endif %}Book now before the seats fill up!</p>
     </div>
     <a href="/booking" class="btn">Book your seat now</a>
 </section>

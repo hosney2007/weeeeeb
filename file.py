@@ -22,6 +22,7 @@ from routes.admin_school import school_admin
 from routes.book import book, BOOK
 from models.book_purchase import BookPurchase
 from models.grade import Grade
+from models.pending_registration import PendingRegistration
 from models.school_course import SchoolCourse
 from models.school_lesson import SchoolLesson
 from models.school_sheet import SchoolSheet
@@ -169,6 +170,10 @@ with app.app_context():
             db.session.execute(
                 text(f'ALTER TABLE {q("schedule")} ADD COLUMN {q("grade")} VARCHAR(10)')
             )
+        if "start_date" not in schedule_columns:
+            db.session.execute(
+                text(f'ALTER TABLE {q("schedule")} ADD COLUMN {q("start_date")} VARCHAR(10)')
+            )
         if "capacity" not in schedule_columns:
             db.session.execute(
                 text(f'ALTER TABLE {q("schedule")} ADD COLUMN {q("capacity")} INTEGER')
@@ -243,6 +248,21 @@ def open_groups_for_grade(grade):
     return result
 
 
+def grade10_context():
+    """Data for the homepage banner: open Grade 10 groups + earliest start date."""
+    from datetime import datetime
+    groups = open_groups_for_grade("10")
+    dates = sorted(g["group"].start_date for g in groups if g["group"].start_date)
+    start = None
+    if dates:
+        try:
+            d = datetime.strptime(dates[0], "%Y-%m-%d")
+            start = f"{d.day}/{d.month}/{d.year}"
+        except ValueError:
+            start = None
+    return {"grade10_open": groups, "grade10_start": start}
+
+
 @app.route('/')
 def home():
     stories = SuccessStory.query.filter_by(
@@ -263,7 +283,7 @@ def home():
         stories=stories,
         book=BOOK,
         book_purchase=book_purchase,
-        grade10_open=open_groups_for_grade("10")
+        **grade10_context()
     )
 
 @app.route("/about")

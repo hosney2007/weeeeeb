@@ -11,90 +11,197 @@
             </a>
         </div>
 
-        <div class="booking-form">
-            <form method="post" class="admin-form" id="question-form">
+        <div class="qb-wrap">
+
+            <!-- ============ Question builder ============ -->
+            <form method="post" class="qb-form" id="question-form" novalidate>
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="correct_answer" id="correct_answer">
 
-                <div class="input-box">
-                    <label class="form-label">Question Text</label>
-                    <textarea name="question_text" placeholder="Question text" required></textarea>
+                <div class="qb-form-head">
+                    <h3><i class="fa-solid fa-circle-plus"></i> New question</h3>
+                    <div class="qb-seg">
+                        <label class="qb-seg-item">
+                            <input type="radio" name="question_type" value="mcq" checked>
+                            <span><i class="fa-solid fa-list-ul"></i> Multiple choice</span>
+                        </label>
+                        <label class="qb-seg-item">
+                            <input type="radio" name="question_type" value="text">
+                            <span><i class="fa-solid fa-pen"></i> Short answer</span>
+                        </label>
+                    </div>
                 </div>
 
-                <div class="input-box">
-                    <label class="form-label">Question Type</label>
-                    <select name="question_type" id="question_type" onchange="toggleOptions()">
-                        <option value="mcq">MCQ (multiple choice)</option>
-                        <option value="text">Text (short answer)</option>
-                    </select>
+                <label class="qb-label" for="question_text">Question</label>
+                <textarea name="question_text" id="question_text" rows="3" dir="auto"
+                          placeholder="Write the question here..."></textarea>
+
+                <!-- MCQ -->
+                <div id="mcq-box">
+                    <label class="qb-label">Options <small>(tick the correct one)</small></label>
+                    <div id="qb-options"></div>
+                    <button type="button" id="qb-add-option" class="qb-add">
+                        <i class="fa-solid fa-plus"></i> Add option
+                    </button>
                 </div>
 
-                <div class="input-box" id="options-box">
-                    <label class="form-label">Options (MCQ only)</label>
-                    <input type="text" name="option" placeholder="Option 1">
-                    <input type="text" name="option" placeholder="Option 2">
-                    <input type="text" name="option" placeholder="Option 3">
-                    <input type="text" name="option" placeholder="Option 4">
+                <!-- Short answer -->
+                <div id="text-box" hidden>
+                    <label class="qb-label" for="text_answer">Correct answer</label>
+                    <input type="text" id="text_answer" dir="auto" autocomplete="off"
+                           placeholder="The exact answer the student must type">
+                    <small class="qb-hint">Matching ignores capital/small letters.</small>
                 </div>
 
-                <div class="input-box">
-                    <label class="form-label">Correct Answer</label>
-                    <input type="text" name="correct_answer" placeholder="Must match one of the options exactly (for MCQ) or the exact text answer" required>
-                </div>
+                <p class="qb-error" id="qb-error" hidden></p>
 
-                <div class="submit-btn">
-                    <button type="submit">Add Question</button>
-                </div>
+                <button type="submit" class="qb-submit">
+                    <i class="fa-solid fa-plus"></i> Add question
+                </button>
             </form>
-        </div>
 
-        <div class="card-body">
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Question</th>
-                            <th>Type</th>
-                            <th>Options</th>
-                            <th>Correct Answer</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for question in assignment.questions %}
-                        <tr>
-                            <td>{{ question.question_text }}</td>
-                            <td>{{ question.question_type }}</td>
-                            <td>{{ question.options_list()|join(", ") }}</td>
-                            <td>{{ question.correct_answer }}</td>
-                            <td>
-                                <div class="table-action">
-                                    <form method="post" action="{{ url_for('school_admin.delete_question', id=question.id) }}" style="display:inline;">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="fa-solid fa-trash"></i> Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr><td colspan="5" class="table-empty">No questions yet.</td></tr>
+            <template id="qb-opt-tpl">
+                <div class="qb-opt">
+                    <input type="radio" name="correct_idx" class="qb-radio" aria-label="Correct option">
+                    <span class="qb-letter"></span>
+                    <input type="text" name="option" class="qb-opt-input" dir="auto" autocomplete="off">
+                    <button type="button" class="qb-remove" aria-label="Remove option">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </template>
+
+            <!-- ============ Existing questions ============ -->
+            <div class="qb-list">
+                <h3 class="qb-list-title">
+                    Questions <span class="qb-count">{{ assignment.questions|length }}</span>
+                </h3>
+
+                {% for question in assignment.questions %}
+                <div class="qb-card">
+                    <div class="qb-card-head">
+                        <span class="qb-num">{{ loop.index }}</span>
+                        <span class="qb-badge {{ question.question_type }}">
+                            {{ 'Multiple choice' if question.question_type == 'mcq' else 'Short answer' }}
+                        </span>
+                        <form method="post" action="{{ url_for('school_admin.delete_question', id=question.id) }}"
+                              onsubmit="return confirm('Delete this question?');" class="qb-del-form">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="qb-del" title="Delete question">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <p class="qb-q" dir="auto">{{ question.question_text }}</p>
+
+                    {% if question.question_type == 'mcq' %}
+                    <ul class="qb-opts">
+                        {% for option in question.options_list() %}
+                        <li class="{{ 'correct' if option == question.correct_answer else '' }}" dir="auto">
+                            <span class="qb-opt-letter">{{ 'ABCDEF'[loop.index0] }}</span>
+                            <span>{{ option }}</span>
+                            {% if option == question.correct_answer %}<i class="fa-solid fa-circle-check"></i>{% endif %}
+                        </li>
                         {% endfor %}
-                    </tbody>
-                </table>
+                    </ul>
+                    {% else %}
+                    <p class="qb-ans"><i class="fa-solid fa-circle-check"></i> Correct answer: <strong dir="auto">{{ question.correct_answer }}</strong></p>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="qb-empty">
+                    <i class="fa-regular fa-circle-question"></i>
+                    <p>No questions yet. Add the first one above.</p>
+                </div>
+                {% endfor %}
             </div>
-        </div>
 
+        </div>
     </div>
 </div>
 
 <script>
-    function toggleOptions() {
-        const type = document.getElementById("question_type").value;
-        const optionsBox = document.getElementById("options-box");
-        optionsBox.style.display = (type === "mcq") ? "block" : "none";
+(function () {
+    var MIN = 2, MAX = 6, LETTERS = "ABCDEF";
+    var form = document.getElementById("question-form");
+    var optsBox = document.getElementById("qb-options");
+    var tpl = document.getElementById("qb-opt-tpl");
+    var addBtn = document.getElementById("qb-add-option");
+    var mcqBox = document.getElementById("mcq-box");
+    var textBox = document.getElementById("text-box");
+    var textAnswer = document.getElementById("text_answer");
+    var hidden = document.getElementById("correct_answer");
+    var errBox = document.getElementById("qb-error");
+
+    function rows() { return Array.prototype.slice.call(optsBox.querySelectorAll(".qb-opt")); }
+
+    function renumber() {
+        var list = rows();
+        list.forEach(function (row, i) {
+            row.querySelector(".qb-letter").textContent = LETTERS[i];
+            row.querySelector(".qb-radio").value = i;
+            row.querySelector(".qb-opt-input").placeholder = "Option " + LETTERS[i];
+            row.querySelector(".qb-remove").style.visibility = list.length > MIN ? "visible" : "hidden";
+        });
+        addBtn.style.display = list.length >= MAX ? "none" : "inline-flex";
     }
-    document.addEventListener("DOMContentLoaded", toggleOptions);
+
+    function addRow() {
+        if (rows().length >= MAX) return;
+        optsBox.appendChild(tpl.content.cloneNode(true));
+        renumber();
+    }
+
+    function type() { return form.querySelector('input[name="question_type"]:checked').value; }
+
+    function showError(msg) { errBox.textContent = msg; errBox.hidden = false; }
+
+    function toggleType() {
+        var isMcq = type() === "mcq";
+        mcqBox.hidden = !isMcq;
+        textBox.hidden = isMcq;
+        errBox.hidden = true;
+    }
+
+    optsBox.addEventListener("click", function (e) {
+        var btn = e.target.closest(".qb-remove");
+        if (!btn || rows().length <= MIN) return;
+        btn.closest(".qb-opt").remove();
+        renumber();
+    });
+    addBtn.addEventListener("click", addRow);
+    form.querySelectorAll('input[name="question_type"]').forEach(function (r) {
+        r.addEventListener("change", toggleType);
+    });
+
+    form.addEventListener("submit", function (e) {
+        errBox.hidden = true;
+        var text = document.getElementById("question_text").value.trim();
+        if (!text) { e.preventDefault(); return showError("Please write the question."); }
+
+        if (type() === "mcq") {
+            var values = [], correct = null;
+            rows().forEach(function (row) {
+                var v = row.querySelector(".qb-opt-input").value.trim();
+                if (v) values.push(v.toLowerCase());
+                if (row.querySelector(".qb-radio").checked) correct = v;
+            });
+            if (values.length < MIN) { e.preventDefault(); return showError("Add at least 2 options."); }
+            if (new Set(values).size !== values.length) { e.preventDefault(); return showError("Two options are identical. Please make them different."); }
+            if (correct === null) { e.preventDefault(); return showError("Tick the correct option."); }
+            if (!correct) { e.preventDefault(); return showError("The option you ticked is empty."); }
+            hidden.value = correct;
+        } else {
+            var ans = textAnswer.value.trim();
+            if (!ans) { e.preventDefault(); return showError("Write the correct answer."); }
+            hidden.value = ans;
+        }
+    });
+
+    for (var i = 0; i < 4; i++) addRow();
+    toggleType();
+})();
 </script>
 
 {% endblock %}

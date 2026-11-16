@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="admin-container">
+    <div class="card-admin">
+        <div class="card-header">
+            <h2 class="card-title">
+                {{ group.course.title }} —
+                {{ group.branch.name if group.branch else 'Online' }}
+                ({{ group.day1 }} {{ group.time1 }}{% if group.day2 and group.time2 %} / {{ group.day2 }} {{ group.time2 }}{% endif %})
+            </h2>
+            <a href="{{ url_for('schedule.show_schedule') }}" class="btn-admin outline-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to groups
+            </a>
+        </div>
+        <div class="card-body">
+            <p>Total students: <strong>{{ bookings|length }}</strong></p>
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Student Number</th>
+                            <th>Parent Number</th>
+                            <th>Grade</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in bookings %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ b.student_name }}</td>
+                            <td>{{ b.student_number }}</td>
+                            <td>{{ b.parent_number }}</td>
+                            <td>{{ b.grade }}</td>
+                            <td>{{ b.addational_notes }}</td>
+                            <td>
+                                {% if b.status == "pending" %}
+                                <span class="badge badge-warning">Pending</span>
+                                {% else %}
+                                <span class="badge badge-success">Approved</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7">No students in this group yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

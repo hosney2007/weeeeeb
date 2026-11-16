@@ -14,7 +14,9 @@ from extinsion import mail,limiter
 from extinsion import db
 from models.user import User
 from models.grade import Grade
-from utils.validators import is_valid_phone, clean_phone
+from utils.validators import is_valid_phone, clean_phone, email_domain_exists, email_mailbox_status
+from models.pending_registration import PendingRegistration
+from datetime import datetime, timedelta
 
 auth = Blueprint("auth" ,__name__)
 
@@ -180,6 +182,14 @@ def register():
             flash("Email already registered","danger")
             return redirect(url_for("auth.register"))
 
+        if not email_domain_exists(email):
+            flash("This email domain doesn't exist. Please check your email for typos.", "danger")
+            return redirect(url_for("auth.register"))
+
+        if email_mailbox_status(email, sender=current_app.config.get("MAIL_USERNAME")) is False:
+            flash("This email address doesn't exist. Please enter a correct email.", "danger")
+            return redirect(url_for("auth.register"))
+
         role = "student"
         grade_id = None
         if grade_code:
@@ -191,7 +201,15 @@ def register():
             grade_id = grade.id
 
         hashed_password = generate_password_hash(password)
-        user = User(
+
+        # Drop stale/duplicate pending sign-ups, then keep this one until the
+        # email is confirmed. No User row exists until then.
+        PendingRegistration.query.filter(
+            PendingRegistration.created_at < datetime.utcnow() - timedelta(hours=24)
+        ).delete()
+        PendingRegistration.query.filter_by(email=email).delete()
+
+        pending = PendingRegistration(
             name=name,
             email=email,
             phone=phone,
@@ -200,22 +218,25 @@ def register():
             role=role,
             grade_id=grade_id
         )
-        db.session.add(user)
+        db.session.add(pending)
         db.session.commit()
 
-        email_sent = send_verification_email(user)
-
-        if not email_sent:
-            db.session.delete(user)
+        if not send_verification_email(pending):
+            db.session.delete(pending)
             db.session.commit()
             flash(
                 "We couldn't send a verification email to that address. "
-                "Please double-check your email and try registering again.",
+                "Please double-check your email and try again.",
                 "danger"
             )
             return redirect(url_for("auth.register"))
 
-        flash( "Account created successfully! Please check your email to verify your account.","success")
+        flash(
+            "Almost done! We sent a verification link to your email. "
+            "Your account will be created once you click it (valid for 24 hours). "
+            "If nothing arrives, check the email address and register again.",
+            "success"
+        )
         return redirect(url_for("auth.login"))
     return render_template("register.html", name="Register")
 
@@ -230,7 +251,7 @@ def verify_email(token):
         email = serializer.loads(
             token,
             salt="email-confirm",
-            max_age=3600
+            max_age=86400
         )
 
     except SignatureExpired:
@@ -245,22 +266,36 @@ def verify_email(token):
 
     user = User.query.filter_by(email=email).first()
 
-    if not user:
-
-        flash("Account not found.", "danger")
+    if user:
+        if user.is_verified:
+            flash("Your account is already verified.", "info")
+            return redirect(url_for("auth.login"))
+        user.is_verified = True
+        db.session.commit()
+        flash("Your email has been verified successfully. You can now login.", "success")
         return redirect(url_for("auth.login"))
 
-    if user.is_verified:
+    pending = PendingRegistration.query.filter_by(email=email).first()
 
-        flash("Your account is already verified.", "info")
-        return redirect(url_for("auth.login"))
+    if not pending:
+        flash("This link is no longer valid. Please register again.", "danger")
+        return redirect(url_for("auth.register"))
 
-    user.is_verified = True
-
+    user = User(
+        name=pending.name,
+        email=pending.email,
+        phone=pending.phone,
+        parent_phone=pending.parent_phone,
+        password=pending.password,
+        role=pending.role,
+        grade_id=pending.grade_id,
+        is_verified=True
+    )
+    db.session.add(user)
+    db.session.delete(pending)
     db.session.commit()
 
-    flash("Your email has been verified successfully. You can now login.", "success")
-
+    flash("Your email has been verified and your account is ready. You can now login.", "success")
     return redirect(url_for("auth.login"))
 
 @auth.route("/resend-verification", methods=["POST"])
@@ -273,6 +308,15 @@ def resend_verification():
 
     if not user:
 
+        pending = PendingRegistration.query.filter_by(email=email).first()
+
+        if pending:
+            if send_verification_email(pending):
+                flash("Verification email sent successfully.", "success")
+            else:
+                flash("We couldn't send the email. Please check the address and try again.", "danger")
+            return redirect(url_for("auth.login"))
+
         flash("Account not found.", "danger")
 
         return redirect(url_for("auth.login"))
@@ -283,9 +327,10 @@ def resend_verification():
 
         return redirect(url_for("auth.login"))
 
-    send_verification_email(user)
-
-    flash("Verification email sent successfully.", "success")
+    if send_verification_email(user):
+        flash("Verification email sent successfully.", "success")
+    else:
+        flash("We couldn't send the email. Please try again later.", "danger")
 
     return redirect(url_for("auth.login"))
 
@@ -296,11 +341,23 @@ def login():
     if request.method == "POST":
         email = request.form["email"].strip().lower()
         password = request.form["password"]   
+        grade_code = request.form.get("grade_code", "").strip().upper()
         user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
             if not user.is_verified:
                 flash("Please verify your email first.","warning")
                 return redirect(url_for("auth.login"))
+            if grade_code:
+                if user.role not in ("student", "school_student"):
+                    flash("A school code can't be used with this account.", "danger")
+                    return redirect(url_for("auth.login"))
+                grade = Grade.query.filter_by(code=grade_code).first()
+                if not grade:
+                    flash("Invalid school code.", "danger")
+                    return redirect(url_for("auth.login"))
+                user.role = "school_student"
+                user.grade_id = grade.id
+                db.session.commit()
             login_user(user)
             flash("welcome back!","success")
             if user.role == "admin":

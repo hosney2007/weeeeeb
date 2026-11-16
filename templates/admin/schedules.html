@@ -21,6 +21,7 @@
                          <th>Courses</th>
                          <th>branch </th>
                          <th> days </th>
+                         <th> students</th>
                          <th> action</th>
 
                     </thead>
@@ -28,8 +29,14 @@
                         {%for schedule in schedule%}
                          <tr>
                           <td>{{ schedule.course.title }}</td>
-                          <td>{{ schedule.branch.name }}</td>
+                          <td>{{ schedule.branch.name if schedule.branch else 'Online' }}</td>
                           <td>{{schedule.day1}}{% if schedule.day2 %}-{{schedule.day2}}{% endif %}</td>
+                            <td>
+                                <a href="{{ url_for('schedule.group_students', schedule_id=schedule.id) }}" class="btn-admin outline-btn">
+                                    <i class="fa-solid fa-users"></i>
+                                    View students ({{ schedule.bookings|length }})
+                                </a>
+                            </td>
                             <td>
                                 <div class="table-action">
                                      <form method="post" action="{{ url_for('schedule.delete_schedule', schedule_id=schedule.id)}}" style="display:inline;" onsubmit="return confirm('Delete this group?');">

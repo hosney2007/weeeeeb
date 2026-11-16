@@ -16,18 +16,20 @@ def register(client, **overrides):
 
 
 class TestRegister:
-    def test_register_creates_unverified_user(self, client, app):
+    def test_register_creates_pending_signup_not_user(self, client, app):
+        from models.pending_registration import PendingRegistration
         resp = register(client)
         assert resp.status_code == 302
         assert resp.headers["Location"].endswith("/login")
 
         with app.app_context():
-            user = User.query.filter_by(email="ahmed@example.com").first()
-            assert user is not None
-            assert user.is_verified is False
-            assert user.role == "student"
-            assert user.phone == "01012345678"
-            assert user.parent_phone == "01123456789"
+            # No account until the email link is clicked.
+            assert User.query.filter_by(email="ahmed@example.com").first() is None
+            pending = PendingRegistration.query.filter_by(email="ahmed@example.com").first()
+            assert pending is not None
+            assert pending.role == "student"
+            assert pending.phone == "01012345678"
+            assert pending.parent_phone == "01123456789"
 
     def test_register_rejects_invalid_parent_phone(self, client, app):
         register(client, parent_phone="12345")
