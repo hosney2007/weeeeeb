@@ -31,16 +31,103 @@
 
 </section>
 
-{% if grade10_open %}
-<!--grade 10 open booking banner-->
+{% if config.SHOW_BASICS_BANNER %}
+<!--new basics group booking banner-->
 <section class="open-booking-banner" data-aos="fade-up">
     <div class="open-booking-head">
         <span class="open-badge">Booking is open</span>
-        <h3>Grade 10 booking is now open at all centers</h3>
-        <p>{% if grade10_start %}The Grade 10 course starts on {{ grade10_start }}. {% endif %}Book now before the seats fill up!</p>
+        <h3>New Basics Group 2027</h3>
+        {% if config.BASICS_START_DATE %}<p class="open-start"><i class="fa-regular fa-calendar"></i> Course starts on <b>{{ config.BASICS_START_DATE }}</b></p>{% endif %}
+        <p>Book your seat now before the seats fill up!</p>
     </div>
-    <a href="/booking" class="btn">Book your seat now</a>
+    <button type="button" class="btn" id="wa-open">Book your seats</button>
 </section>
+
+<div class="wa-modal" id="wa-modal" data-number="{{ config.WHATSAPP_NUMBER }}" hidden>
+    <div class="wa-card" role="dialog" aria-modal="true" aria-labelledby="wa-title">
+        <button type="button" class="wa-close" id="wa-close" aria-label="Close">&times;</button>
+        <h3 id="wa-title">Book your seat</h3>
+        <p class="wa-sub">New Basics Group 2027 &mdash; fill in your details and we will continue on WhatsApp.</p>
+        <form id="wa-form" novalidate>
+            <label for="wa-name">Student name</label>
+            <input type="text" id="wa-name" dir="auto" autocomplete="name" placeholder="Full name">
+
+            <label for="wa-phone">Student phone number</label>
+            <input type="tel" id="wa-phone" inputmode="numeric" autocomplete="tel" placeholder="e.g. 01012345678">
+
+            <label for="wa-parent">Parent phone number</label>
+            <input type="tel" id="wa-parent" inputmode="numeric" placeholder="e.g. 01123456789">
+
+            {% if branches %}
+            <label for="wa-branch">Branch</label>
+            <select id="wa-branch">
+                <option value="">Choose your branch</option>
+                {% for b in branches %}{% if b.name %}
+                <option value="{{ b.name }}">{{ b.name }}</option>
+                {% endif %}{% endfor %}
+            </select>
+            {% endif %}
+
+            <p class="wa-error" id="wa-error" hidden></p>
+            <button type="submit" class="wa-submit">
+                <i class="fa-brands fa-whatsapp"></i> Continue on WhatsApp
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+(function () {
+    var modal = document.getElementById("wa-modal");
+    var form = document.getElementById("wa-form");
+    var err = document.getElementById("wa-error");
+    var openBtn = document.getElementById("wa-open");
+    if (!modal || !form || !openBtn) return;
+
+    function open() { modal.hidden = false; document.getElementById("wa-name").focus(); }
+    function close() { modal.hidden = true; err.hidden = true; }
+
+    function digits(v) {
+        // accept Arabic-Indic digits too
+        return v.replace(/[\u0660-\u0669]/g, function (d) { return d.charCodeAt(0) - 0x0660; })
+                .replace(/[^0-9]/g, "");
+    }
+    function fail(msg) { err.textContent = msg; err.hidden = false; }
+
+    openBtn.addEventListener("click", open);
+    document.getElementById("wa-close").addEventListener("click", close);
+    modal.addEventListener("click", function (e) { if (e.target === modal) close(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) close(); });
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        err.hidden = true;
+        var name = document.getElementById("wa-name").value.trim();
+        var phone = digits(document.getElementById("wa-phone").value);
+        var parent = digits(document.getElementById("wa-parent").value);
+        var phoneRe = /^01[0125][0-9]{8}$/;
+        var branchEl = document.getElementById("wa-branch");
+        var branch = branchEl ? branchEl.value : "";
+
+        if (name.length < 3) return fail("Please enter the student's full name.");
+        if (!phoneRe.test(phone)) return fail("Please enter a valid student phone number (e.g. 01012345678).");
+        if (!phoneRe.test(parent)) return fail("Please enter a valid parent phone number (e.g. 01012345678).");
+        if (branchEl && !branch) return fail("Please choose your branch.");
+
+        var number = digits(modal.dataset.number || "");
+        var text = "Hello, I would like to book a seat in New Basics Group 2027.\n" +
+                   "Student name: " + name + "\n" +
+                   "Student phone: " + phone + "\n" +
+                   "Parent phone: " + parent +
+                   (branch ? "\nBranch: " + branch : "");
+        var url = "https://wa.me/" + number + "?text=" + encodeURIComponent(text);
+        var w = window.open(url, "_blank");
+        if (!w) window.location.href = url;
+        close();
+        form.reset();
+    });
+})();
+</script>
 {% endif %}
 
 

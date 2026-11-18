@@ -34,5 +34,8 @@ class Config:
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", MAIL_USERNAME)
     ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", MAIL_USERNAME)
 
+    SHOW_BASICS_BANNER = os.getenv("SHOW_BASICS_BANNER", "true").lower() == "true"
+    BASICS_START_DATE = os.getenv("BASICS_START_DATE", "10/12/2026")
+    WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER", "201067474994")
     VODAFONE_CASH_NUMBER = os.getenv("VODAFONE_CASH_NUMBER", "01012345678")
     INSTAPAY_ID = os.getenv("INSTAPAY_ID", "mohamedhosney@instapay")

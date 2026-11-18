@@ -81,7 +81,7 @@
         <div class="mt-3">
 
             <img
-                src="{{ url_for('static', filename='uploads/' ~ story.image) }}"
+                src="{{ story.image|media_url }}"
                 width="120"
                 class="mb-3 rounded-circle">
 

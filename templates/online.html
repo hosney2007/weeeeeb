@@ -17,7 +17,7 @@
             <div class="recorded-card">
                 <div class="recorded-img">
                     {%if course.image%}
-                      <img src="{{ url_for('static', filename='uploads/'+ course.image) }}" alt="{{course.title}}">
+                      <img src="{{ course.image|media_url }}" alt="{{course.title}}">
                     {%endif%}
                 </div>
                 <div class="recorded-content" >

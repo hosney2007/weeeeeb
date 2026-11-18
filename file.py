@@ -114,6 +114,18 @@ def create_admin(name,email,password):
 
 #app configrtion==//
 app.config.from_object(Config)
+
+
+@app.template_filter("media_url")
+def media_url(value):
+    """Image value from the DB -> a usable URL.
+    New uploads are stored as full URLs; old ones as 'folder/file.jpg'."""
+    if not value:
+        return ""
+    if value.startswith(("http://", "https://", "/")):
+        return value
+    return url_for("static", filename="uploads/" + value)
+
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 db.init_app(app)
 csrf.init_app(app)
@@ -283,7 +295,7 @@ def home():
         stories=stories,
         book=BOOK,
         book_purchase=book_purchase,
-        **grade10_context()
+        branches=Branch.query.order_by(Branch.name.asc()).all()
     )
 
 @app.route("/about")

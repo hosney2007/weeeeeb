@@ -130,7 +130,7 @@
                     <div class="course-card">
 
                         <div class="course-image">
-                        <img src="{{ url_for('static', filename='uploads/'+ purchase.recorded.thumbnail) }}" alt="">
+                        <img src="{{ purchase.recorded.thumbnail|media_url }}" alt="">
 
 
                         </div>
